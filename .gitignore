@@ -1,0 +1,31 @@
+# Node dependencies
+node_modules/
+
+# Local environment variables
+.env
+.env.local
+.env.*.local
+
+# Production builds
+dist/
+dist-ssr/
+build/
+*.local
+
+# Local databases & user data
+server/data/*.json
+!server/data/placeholder
+uploads/
+reports/
+
+# Log files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+*.log
+
+# System files
+.DS_Store
+Thumbs.db

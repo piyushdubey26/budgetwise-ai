@@ -1,0 +1,780 @@
+import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
+import { motion, AnimatePresence } from 'framer-motion';
+import { 
+  ArrowUpRight, 
+  ArrowDownRight, 
+  Trash2, 
+  Search, 
+  Filter, 
+  Download, 
+  Upload, 
+  Plus, 
+  Wallet, 
+  ArrowRightLeft, 
+  Settings,
+  X,
+  FileSpreadsheet,
+  FileText
+} from 'lucide-react';
+import axios from 'axios';
+
+const CATEGORIES = [
+  'Food', 'Shopping', 'Travel', 'Education', 'Medical', 'Fuel', 'Bills', 'Rent', 'Investment', 'Entertainment', 'Other'
+];
+
+export default function Transactions({ refresh }) {
+  const { transactions, wallets, budgets } = useSelector(state => state.finance);
+  const { user } = useSelector(state => state.auth);
+  
+  const [activeTab, setActiveTab] = useState('list'); // list, wallets, budgets
+  const [search, setSearch] = useState('');
+  const [typeFilter, setTypeFilter] = useState('');
+  const [catFilter, setCatFilter] = useState('');
+  
+  // Modals state
+  const [showAddTx, setShowAddTx] = useState(false);
+  const [showAddWallet, setShowAddWallet] = useState(false);
+  const [showTransfer, setShowTransfer] = useState(false);
+  const [showSetBudget, setShowSetBudget] = useState(false);
+  const [showImport, setShowImport] = useState(false);
+
+  // Form states
+  const [txForm, setTxForm] = useState({
+    title: '', amount: '', type: 'expense', category: 'Food', 
+    date: new Date().toISOString().split('T')[0], time: '', 
+    location: '', paymentMode: 'cash', notes: '', tags: '',
+    sourceWalletId: '', targetWalletId: ''
+  });
+
+  const [walletForm, setWalletForm] = useState({ name: '', type: 'cash', balance: 0 });
+  const [transferForm, setTransferForm] = useState({ sourceWalletId: '', targetWalletId: '', amount: '' });
+  const [budgetForm, setBudgetForm] = useState({ month: new Date().toISOString().substring(0, 7), category: 'All', amount: '' });
+  const [importFile, setImportFile] = useState(null);
+
+  const handleDeleteTx = async (id) => {
+    try {
+      await axios.delete(`/api/transactions/${id}`);
+      if (refresh) refresh();
+    } catch (e) {
+      alert(e.response?.data?.message || 'Delete transaction failed');
+    }
+  };
+
+  const handleAddTx = async (e) => {
+    e.preventDefault();
+    try {
+      const parsedTags = txForm.tags ? txForm.tags.split(',').map(t => t.trim()) : [];
+      await axios.post('/api/transactions', {
+        ...txForm,
+        tags: parsedTags,
+        // Match payment mode name
+        paymentMode: txForm.type === 'income' 
+          ? (wallets.find(w => w._id === txForm.targetWalletId)?.name || 'Wallet')
+          : (wallets.find(w => w._id === txForm.sourceWalletId)?.name || 'Wallet')
+      });
+      setShowAddTx(false);
+      // Reset form
+      setTxForm({
+        title: '', amount: '', type: 'expense', category: 'Food', 
+        date: new Date().toISOString().split('T')[0], time: '', 
+        location: '', paymentMode: 'cash', notes: '', tags: '',
+        sourceWalletId: '', targetWalletId: ''
+      });
+      if (refresh) refresh();
+    } catch (e) {
+      alert(e.response?.data?.message || 'Failed to add transaction');
+    }
+  };
+
+  const handleAddWallet = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.post('/api/wallets', walletForm);
+      setShowAddWallet(false);
+      setWalletForm({ name: '', type: 'cash', balance: 0 });
+      if (refresh) refresh();
+    } catch (e) {
+      alert(e.response?.data?.message || 'Failed to create wallet');
+    }
+  };
+
+  const handleTransfer = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.post('/api/transactions', {
+        title: 'Wallet Transfer',
+        amount: parseFloat(transferForm.amount),
+        type: 'transfer',
+        category: 'Transfer',
+        date: new Date().toISOString().split('T')[0],
+        sourceWalletId: transferForm.sourceWalletId,
+        targetWalletId: transferForm.targetWalletId
+      });
+      setShowTransfer(false);
+      setTransferForm({ sourceWalletId: '', targetWalletId: '', amount: '' });
+      if (refresh) refresh();
+    } catch (e) {
+      alert(e.response?.data?.message || 'Transfer failed');
+    }
+  };
+
+  const handleSetBudget = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.post('/api/budgets', budgetForm);
+      setShowSetBudget(false);
+      setBudgetForm({ month: new Date().toISOString().substring(0, 7), category: 'All', amount: '' });
+      if (refresh) refresh();
+    } catch (e) {
+      alert(e.response?.data?.message || 'Failed to set budget');
+    }
+  };
+
+  const handleImport = async (e) => {
+    e.preventDefault();
+    if (!importFile) return;
+    const formData = new FormData();
+    formData.append('statement', importFile);
+    try {
+      await axios.post('/api/reports/import', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+      setShowImport(false);
+      setImportFile(null);
+      if (refresh) refresh();
+    } catch (e) {
+      alert(e.response?.data?.message || 'Import failed');
+    }
+  };
+
+  const handleExport = (format) => {
+    window.open(`/api/reports/export?format=${format}&token=${localStorage.getItem('token') || ''}`, '_blank');
+  };
+
+  // Filtered transactions
+  const filteredTx = transactions.filter(t => {
+    const matchesSearch = t.title.toLowerCase().includes(search.toLowerCase()) || 
+                          (t.category && t.category.toLowerCase().includes(search.toLowerCase())) ||
+                          (t.notes && t.notes.toLowerCase().includes(search.toLowerCase()));
+    const matchesType = typeFilter ? t.type === typeFilter : true;
+    const matchesCat = catFilter ? t.category === catFilter : true;
+    return matchesSearch && matchesType && matchesCat;
+  });
+
+  return (
+    <div className="space-y-6 max-w-7xl mx-auto">
+      
+      {/* Sub Header tabs */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div className="flex gap-2 p-1 bg-slate-950/80 rounded-xl border border-white/5 shadow-inner">
+          <button 
+            onClick={() => setActiveTab('list')}
+            className={`px-4 py-2 text-xs font-bold rounded-lg transition-all ${activeTab === 'list' ? 'bg-gradient-to-r from-brand-indigo to-brand-purple text-white shadow' : 'text-gray-400 hover:text-white'}`}
+          >
+            All Transactions
+          </button>
+          <button 
+            onClick={() => setActiveTab('wallets')}
+            className={`px-4 py-2 text-xs font-bold rounded-lg transition-all ${activeTab === 'wallets' ? 'bg-gradient-to-r from-brand-indigo to-brand-purple text-white shadow' : 'text-gray-400 hover:text-white'}`}
+          >
+            Wallets & Transfers
+          </button>
+          <button 
+            onClick={() => setActiveTab('budgets')}
+            className={`px-4 py-2 text-xs font-bold rounded-lg transition-all ${activeTab === 'budgets' ? 'bg-gradient-to-r from-brand-indigo to-brand-purple text-white shadow' : 'text-gray-400 hover:text-white'}`}
+          >
+            Budgets
+          </button>
+        </div>
+
+        <div className="flex items-center gap-2">
+          {activeTab === 'list' && (
+            <>
+              <button 
+                onClick={() => setShowImport(true)} 
+                className="flex items-center gap-1.5 bg-slate-900 border border-white/10 hover:bg-slate-800 text-xs font-bold px-3.5 py-2 rounded-xl text-white transition-all"
+              >
+                <Upload className="h-3.5 w-3.5" /> Import CSV
+              </button>
+              <div className="relative group">
+                <button className="flex items-center gap-1.5 bg-slate-900 border border-white/10 hover:bg-slate-800 text-xs font-bold px-3.5 py-2 rounded-xl text-white transition-all">
+                  <Download className="h-3.5 w-3.5" /> Export Reports
+                </button>
+                <div className="absolute right-0 mt-1 w-36 bg-slate-900 border border-white/10 rounded-xl shadow-xl hidden group-hover:block overflow-hidden z-20">
+                  <button onClick={() => handleExport('pdf')} className="flex items-center gap-2 w-full text-left px-4 py-2.5 text-xs text-gray-300 hover:bg-slate-800 hover:text-white"><FileText className="h-3.5 w-3.5 text-rose-400" /> PDF Report</button>
+                  <button onClick={() => handleExport('excel')} className="flex items-center gap-2 w-full text-left px-4 py-2.5 text-xs text-gray-300 hover:bg-slate-800 hover:text-white"><FileSpreadsheet className="h-3.5 w-3.5 text-emerald-400" /> Excel Sheet</button>
+                  <button onClick={() => handleExport('csv')} className="flex items-center gap-2 w-full text-left px-4 py-2.5 text-xs text-gray-300 hover:bg-slate-800 hover:text-white"><Upload className="h-3.5 w-3.5 text-blue-400" /> CSV File</button>
+                </div>
+              </div>
+            </>
+          )}
+
+          {activeTab === 'wallets' && (
+            <button 
+              onClick={() => setShowAddWallet(true)} 
+              className="flex items-center gap-1.5 bg-gradient-to-r from-brand-indigo to-brand-purple text-xs font-bold px-3.5 py-2 rounded-xl text-white shadow shadow-brand-indigo/10 hover:brightness-110"
+            >
+              <Plus className="h-3.5 w-3.5" /> New Wallet
+            </button>
+          )}
+
+          {activeTab === 'budgets' && (
+            <button 
+              onClick={() => setShowSetBudget(true)} 
+              className="flex items-center gap-1.5 bg-gradient-to-r from-brand-indigo to-brand-purple text-xs font-bold px-3.5 py-2 rounded-xl text-white shadow shadow-brand-indigo/10 hover:brightness-110"
+            >
+              <Settings className="h-3.5 w-3.5" /> Set Budget
+            </button>
+          )}
+
+          {activeTab === 'list' && (
+            <button 
+              onClick={() => setShowAddTx(true)} 
+              className="flex items-center gap-1.5 bg-gradient-to-r from-brand-indigo to-brand-purple text-xs font-bold px-3.5 py-2 rounded-xl text-white shadow shadow-brand-indigo/10 hover:brightness-110"
+            >
+              <Plus className="h-3.5 w-3.5" /> Add Transaction
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* ==========================================
+          TAB 1: TRANSACTIONS LIST
+          ========================================== */}
+      {activeTab === 'list' && (
+        <div className="space-y-4">
+          {/* Filters Bar */}
+          <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 p-4 bg-slate-950/40 border border-white/5 rounded-2xl">
+            <div className="relative col-span-2">
+              <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-500" />
+              <input 
+                type="text" 
+                placeholder="Search description, tags, notes..." 
+                value={search}
+                onChange={e => setSearch(e.target.value)}
+                className="w-full bg-slate-900/80 border border-white/10 focus:border-brand-purple/40 rounded-xl pl-10 pr-4 py-2 text-sm focus:outline-none text-white transition-all"
+              />
+            </div>
+            <div>
+              <select 
+                value={typeFilter} 
+                onChange={e => setTypeFilter(e.target.value)}
+                className="w-full bg-slate-900/80 border border-white/10 rounded-xl px-3 py-2 text-sm text-gray-300 focus:outline-none focus:border-brand-purple/40 cursor-pointer"
+              >
+                <option value="">All Types</option>
+                <option value="income">Income</option>
+                <option value="expense">Expense</option>
+                <option value="transfer">Transfer</option>
+              </select>
+            </div>
+            <div>
+              <select 
+                value={catFilter} 
+                onChange={e => setCatFilter(e.target.value)}
+                className="w-full bg-slate-900/80 border border-white/10 rounded-xl px-3 py-2 text-sm text-gray-300 focus:outline-none focus:border-brand-purple/40 cursor-pointer"
+              >
+                <option value="">All Categories</option>
+                {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+              </select>
+            </div>
+          </div>
+
+          {/* Transactions Table/Cards */}
+          <div className="glass-panel rounded-3xl overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="border-b border-white/5 bg-slate-950/60 text-xs font-bold text-gray-400 uppercase">
+                    <th className="py-4 px-6">Date</th>
+                    <th className="py-4 px-6">Description</th>
+                    <th className="py-4 px-6">Category</th>
+                    <th className="py-4 px-6">Payment Mode</th>
+                    <th className="py-4 px-6 text-right">Amount</th>
+                    <th className="py-4 px-6 text-center">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-white/5 text-sm">
+                  {filteredTx.length === 0 ? (
+                    <tr>
+                      <td colSpan="6" className="py-12 text-center text-gray-500 font-medium text-xs">
+                        No transactions matches your active filters.
+                      </td>
+                    </tr>
+                  ) : (
+                    filteredTx.map(t => (
+                      <tr key={t._id} className="hover:bg-slate-900/25 transition-colors">
+                        <td className="py-4 px-6 text-xs text-gray-400 whitespace-nowrap">{t.date}</td>
+                        <td className="py-4 px-6">
+                          <div>
+                            <span className="font-semibold text-white block">{t.title}</span>
+                            {t.notes && <span className="text-[10px] text-gray-500 block truncate w-48">{t.notes}</span>}
+                            {t.tags && t.tags.length > 0 && (
+                              <div className="flex gap-1 mt-1">
+                                {t.tags.map(tag => (
+                                  <span key={tag} className="text-[9px] bg-slate-800 text-slate-300 px-1.5 py-0.5 rounded font-medium">#{tag}</span>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                        </td>
+                        <td className="py-4 px-6">
+                          <span className="text-xs bg-slate-900 border border-white/5 px-2.5 py-1 rounded-full font-bold text-gray-300">
+                            {t.category || 'Other'}
+                          </span>
+                        </td>
+                        <td className="py-4 px-6 text-xs text-gray-400">{t.paymentMode || 'Transfer'}</td>
+                        <td className="py-4 px-6 text-right">
+                          <span className={`font-extrabold text-sm ${t.type === 'income' ? 'text-emerald-400' : t.type === 'transfer' ? 'text-blue-400' : 'text-rose-400'}`}>
+                            {t.type === 'income' ? '+' : '-'} ₹{t.amount.toLocaleString()}
+                          </span>
+                        </td>
+                        <td className="py-4 px-6 text-center">
+                          <button 
+                            onClick={() => handleDeleteTx(t._id)}
+                            className="p-1.5 rounded-lg text-gray-500 hover:text-rose-400 hover:bg-rose-500/10 transition-colors"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ==========================================
+          TAB 2: WALLETS & TRANSFERS
+          ========================================== */}
+      {activeTab === 'wallets' && (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Wallet List */}
+          <div className="lg:col-span-2 space-y-4">
+            <h3 className="text-base font-bold text-white">Your Wallets</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {wallets.map(w => (
+                <div key={w._id} className="glass-panel p-6 rounded-2xl flex items-center justify-between border-l-4 border-brand-purple">
+                  <div>
+                    <span className="text-sm font-bold text-white block">{w.name}</span>
+                    <span className="text-[10px] text-gray-400 uppercase tracking-wider">{w.type}</span>
+                  </div>
+                  <span className={`text-lg font-extrabold ${w.balance < 0 ? 'text-rose-400' : 'text-emerald-400'}`}>
+                    ₹{w.balance.toLocaleString()}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Quick Transfer funds widget */}
+          <div className="glass-panel p-6 rounded-3xl h-fit">
+            <h3 className="text-base font-bold text-white flex items-center gap-1.5 mb-4">
+              <ArrowRightLeft className="h-4 w-4 text-brand-purple" />
+              Transfer Funds
+            </h3>
+            <form onSubmit={handleTransfer} className="space-y-4">
+              <div>
+                <label className="text-[11px] font-bold text-gray-400 uppercase block mb-1.5">Source Wallet</label>
+                <select 
+                  required
+                  value={transferForm.sourceWalletId}
+                  onChange={e => setTransferForm({ ...transferForm, sourceWalletId: e.target.value })}
+                  className="w-full bg-slate-950 border border-white/10 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none cursor-pointer"
+                >
+                  <option value="">Select source</option>
+                  {wallets.map(w => <option key={w._id} value={w._id}>{w.name} (₹{w.balance})</option>)}
+                </select>
+              </div>
+
+              <div>
+                <label className="text-[11px] font-bold text-gray-400 uppercase block mb-1.5">Destination Wallet</label>
+                <select 
+                  required
+                  value={transferForm.targetWalletId}
+                  onChange={e => setTransferForm({ ...transferForm, targetWalletId: e.target.value })}
+                  className="w-full bg-slate-950 border border-white/10 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none cursor-pointer"
+                >
+                  <option value="">Select target</option>
+                  {wallets.map(w => <option key={w._id} value={w._id}>{w.name} (₹{w.balance})</option>)}
+                </select>
+              </div>
+
+              <div>
+                <label className="text-[11px] font-bold text-gray-400 uppercase block mb-1.5">Amount (₹)</label>
+                <input 
+                  type="number"
+                  required
+                  placeholder="0"
+                  value={transferForm.amount}
+                  onChange={e => setTransferForm({ ...transferForm, amount: e.target.value })}
+                  className="w-full bg-slate-950 border border-white/10 focus:border-brand-purple/40 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none"
+                />
+              </div>
+
+              <button 
+                type="submit"
+                className="w-full py-2.5 bg-gradient-to-r from-brand-indigo to-brand-purple hover:brightness-110 text-white font-bold text-xs rounded-xl shadow-lg transition-all"
+              >
+                Perform Atomic Transfer
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ==========================================
+          TAB 3: BUDGETS LIST
+          ========================================== */}
+      {activeTab === 'budgets' && (
+        <div className="space-y-4">
+          <h3 className="text-base font-bold text-white">Active Budgets</h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {budgets.length === 0 ? (
+              <div className="col-span-3 text-center py-12 text-gray-500 text-xs font-semibold">
+                No budgets set for this month. Click "Set Budget" to define one.
+              </div>
+            ) : (
+              budgets.map(b => {
+                const percent = Math.min(100, Math.round(((b.spent || 0) / b.amount) * 100));
+                return (
+                  <div key={b._id} className="glass-panel p-6 rounded-2xl flex flex-col justify-between h-40">
+                    <div className="flex justify-between items-start mb-2">
+                      <div>
+                        <span className="text-sm font-bold text-white block">{b.category} Budget</span>
+                        <span className="text-[10px] text-gray-400">Month: {b.month}</span>
+                      </div>
+                      <span className={`text-xs font-extrabold ${percent >= 100 ? 'text-rose-400' : percent >= 80 ? 'text-amber-400' : 'text-brand-purple'}`}>{percent}%</span>
+                    </div>
+
+                    <div>
+                      <div className="w-full h-2.5 bg-slate-800 rounded-full overflow-hidden mb-3">
+                        <div 
+                          className={`h-full ${percent >= 100 ? 'bg-rose-500' : percent >= 80 ? 'bg-amber-500' : 'bg-brand-purple'}`} 
+                          style={{ width: `${percent}%` }} 
+                        />
+                      </div>
+                      <div className="flex justify-between text-[10px] text-gray-400">
+                        <span>Spent: ₹{(b.spent || 0).toLocaleString()}</span>
+                        <span>Total: ₹{b.amount.toLocaleString()}</span>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* ==========================================
+          MODAL DIALOGS
+          ========================================== */}
+      
+      {/* 1. Add Transaction Modal */}
+      <AnimatePresence>
+        {showAddTx && (
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <motion.div 
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              className="bg-slate-900 border border-white/10 w-full max-w-lg rounded-2xl shadow-xl overflow-hidden max-h-[90vh] flex flex-col"
+            >
+              <div className="p-4 border-b border-white/5 flex justify-between items-center bg-slate-950/40">
+                <span className="font-bold text-sm text-white">Add Transaction</span>
+                <button onClick={() => setShowAddTx(false)} className="p-1 rounded-lg text-gray-400 hover:bg-slate-800"><X className="h-5 w-5" /></button>
+              </div>
+
+              <form onSubmit={handleAddTx} className="p-6 space-y-4 overflow-y-auto scrollbar-none flex-1">
+                
+                {/* Income / Expense Toggle */}
+                <div className="grid grid-cols-2 gap-2 bg-slate-950 p-1 rounded-xl">
+                  <button 
+                    type="button"
+                    onClick={() => setTxForm({ ...txForm, type: 'expense' })}
+                    className={`py-2 text-xs font-bold rounded-lg ${txForm.type === 'expense' ? 'bg-rose-500/20 text-rose-400 border border-rose-500/30' : 'text-gray-400'}`}
+                  >
+                    Expense
+                  </button>
+                  <button 
+                    type="button"
+                    onClick={() => setTxForm({ ...txForm, type: 'income' })}
+                    className={`py-2 text-xs font-bold rounded-lg ${txForm.type === 'income' ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'text-gray-400'}`}
+                  >
+                    Income
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-[10px] font-bold text-gray-400 uppercase block mb-1">Title</label>
+                    <input 
+                      type="text" required placeholder="Pizza Hut, Salary..."
+                      value={txForm.title} onChange={e => setTxForm({ ...txForm, title: e.target.value })}
+                      className="w-full bg-slate-950 border border-white/10 rounded-xl px-3 py-2 text-xs focus:outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-[10px] font-bold text-gray-400 uppercase block mb-1">Amount (₹)</label>
+                    <input 
+                      type="number" required placeholder="0"
+                      value={txForm.amount} onChange={e => setTxForm({ ...txForm, amount: e.target.value })}
+                      className="w-full bg-slate-950 border border-white/10 rounded-xl px-3 py-2 text-xs focus:outline-none"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-[10px] font-bold text-gray-400 uppercase block mb-1">Date</label>
+                    <input 
+                      type="date" required
+                      value={txForm.date} onChange={e => setTxForm({ ...txForm, date: e.target.value })}
+                      className="w-full bg-slate-950 border border-white/10 rounded-xl px-3 py-2 text-xs focus:outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-[10px] font-bold text-gray-400 uppercase block mb-1">Category</label>
+                    <select 
+                      value={txForm.category} onChange={e => setTxForm({ ...txForm, category: e.target.value })}
+                      className="w-full bg-slate-950 border border-white/10 rounded-xl px-3 py-2 text-xs focus:outline-none"
+                    >
+                      {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+                    </select>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="text-[10px] font-bold text-gray-400 uppercase block mb-1">
+                    {txForm.type === 'income' ? 'Target Wallet' : 'Source Wallet'}
+                  </label>
+                  <select 
+                    required
+                    value={txForm.type === 'income' ? txForm.targetWalletId : txForm.sourceWalletId}
+                    onChange={e => {
+                      if (txForm.type === 'income') {
+                        setTxForm({ ...txForm, targetWalletId: e.target.value });
+                      } else {
+                        setTxForm({ ...txForm, sourceWalletId: e.target.value });
+                      }
+                    }}
+                    className="w-full bg-slate-950 border border-white/10 rounded-xl px-3 py-2 text-xs focus:outline-none"
+                  >
+                    <option value="">Select active wallet</option>
+                    {wallets.map(w => <option key={w._id} value={w._id}>{w.name} (₹{w.balance})</option>)}
+                  </select>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-[10px] font-bold text-gray-400 uppercase block mb-1">Location</label>
+                    <input 
+                      type="text" placeholder="Mumbai, Online..."
+                      value={txForm.location} onChange={e => setTxForm({ ...txForm, location: e.target.value })}
+                      className="w-full bg-slate-950 border border-white/10 rounded-xl px-3 py-2 text-xs focus:outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-[10px] font-bold text-gray-400 uppercase block mb-1">Tags (comma-separated)</label>
+                    <input 
+                      type="text" placeholder="food, dinner, treat"
+                      value={txForm.tags} onChange={e => setTxForm({ ...txForm, tags: e.target.value })}
+                      className="w-full bg-slate-950 border border-white/10 rounded-xl px-3 py-2 text-xs focus:outline-none"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="text-[10px] font-bold text-gray-400 uppercase block mb-1">Notes</label>
+                  <textarea 
+                    placeholder="Short description notes..." rows="2"
+                    value={txForm.notes} onChange={e => setTxForm({ ...txForm, notes: e.target.value })}
+                    className="w-full bg-slate-950 border border-white/10 rounded-xl px-3 py-2 text-xs focus:outline-none resize-none"
+                  />
+                </div>
+
+                <button 
+                  type="submit"
+                  className="w-full py-2.5 bg-gradient-to-r from-brand-indigo to-brand-purple hover:brightness-110 text-white font-bold text-xs rounded-xl shadow-lg transition-all mt-4"
+                >
+                  Log Transaction
+                </button>
+              </form>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* 2. Add Wallet Modal */}
+      <AnimatePresence>
+        {showAddWallet && (
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <motion.div 
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              className="bg-slate-900 border border-white/10 w-full max-w-sm rounded-2xl shadow-xl overflow-hidden"
+            >
+              <div className="p-4 border-b border-white/5 flex justify-between items-center bg-slate-950/40">
+                <span className="font-bold text-sm text-white">Create New Wallet</span>
+                <button onClick={() => setShowAddWallet(false)} className="p-1 rounded-lg text-gray-400 hover:bg-slate-800"><X className="h-5 w-5" /></button>
+              </div>
+
+              <form onSubmit={handleAddWallet} className="p-6 space-y-4">
+                
+                {/* Premium Warning banner */}
+                {!user?.isPremium && wallets.length >= 3 && (
+                  <div className="bg-amber-500/10 border border-amber-500/20 p-2.5 rounded-lg text-[10px] text-amber-400 leading-snug">
+                    ⚠️ Premium limit warning. Free users are capped at 3 wallets. Upgrade in settings.
+                  </div>
+                )}
+
+                <div>
+                  <label className="text-[10px] font-bold text-gray-400 uppercase block mb-1">Wallet Name</label>
+                  <input 
+                    type="text" required placeholder="SBI Bank, PayTM..."
+                    value={walletForm.name} onChange={e => setWalletForm({ ...walletForm, name: e.target.value })}
+                    className="w-full bg-slate-950 border border-white/10 rounded-xl px-3 py-2 text-xs focus:outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-[10px] font-bold text-gray-400 uppercase block mb-1">Type</label>
+                  <select 
+                    value={walletForm.type} onChange={e => setWalletForm({ ...walletForm, type: e.target.value })}
+                    className="w-full bg-slate-950 border border-white/10 rounded-xl px-3 py-2 text-xs focus:outline-none"
+                  >
+                    <option value="cash">Cash</option>
+                    <option value="bank">Bank Account</option>
+                    <option value="credit_card">Credit Card</option>
+                    <option value="upi">UPI / e-Wallet</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="text-[10px] font-bold text-gray-400 uppercase block mb-1">Initial Balance (₹)</label>
+                  <input 
+                    type="number" placeholder="0"
+                    value={walletForm.balance} onChange={e => setWalletForm({ ...walletForm, balance: parseFloat(e.target.value) || 0 })}
+                    className="w-full bg-slate-950 border border-white/10 rounded-xl px-3 py-2 text-xs focus:outline-none"
+                  />
+                </div>
+
+                <button 
+                  type="submit"
+                  className="w-full py-2.5 bg-gradient-to-r from-brand-indigo to-brand-purple hover:brightness-110 text-white font-bold text-xs rounded-xl shadow-lg transition-all"
+                >
+                  Create Wallet
+                </button>
+              </form>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* 3. Set Budget Modal */}
+      <AnimatePresence>
+        {showSetBudget && (
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <motion.div 
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              className="bg-slate-900 border border-white/10 w-full max-w-sm rounded-2xl shadow-xl overflow-hidden"
+            >
+              <div className="p-4 border-b border-white/5 flex justify-between items-center bg-slate-950/40">
+                <span className="font-bold text-sm text-white">Define Budget Limit</span>
+                <button onClick={() => setShowSetBudget(false)} className="p-1 rounded-lg text-gray-400 hover:bg-slate-800"><X className="h-5 w-5" /></button>
+              </div>
+
+              <form onSubmit={handleSetBudget} className="p-6 space-y-4">
+                <div>
+                  <label className="text-[10px] font-bold text-gray-400 uppercase block mb-1">Month (YYYY-MM)</label>
+                  <input 
+                    type="month" required
+                    value={budgetForm.month} onChange={e => setBudgetForm({ ...budgetForm, month: e.target.value })}
+                    className="w-full bg-slate-950 border border-white/10 rounded-xl px-3 py-2 text-xs focus:outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-[10px] font-bold text-gray-400 uppercase block mb-1">Category limit</label>
+                  <select 
+                    value={budgetForm.category} onChange={e => setBudgetForm({ ...budgetForm, category: e.target.value })}
+                    className="w-full bg-slate-950 border border-white/10 rounded-xl px-3 py-2 text-xs focus:outline-none"
+                  >
+                    <option value="All">All Expenses (Overall Month)</option>
+                    {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="text-[10px] font-bold text-gray-400 uppercase block mb-1">Limit (₹)</label>
+                  <input 
+                    type="number" required placeholder="50000"
+                    value={budgetForm.amount} onChange={e => setBudgetForm({ ...budgetForm, amount: e.target.value })}
+                    className="w-full bg-slate-950 border border-white/10 rounded-xl px-3 py-2 text-xs focus:outline-none"
+                  />
+                </div>
+
+                <button 
+                  type="submit"
+                  className="w-full py-2.5 bg-gradient-to-r from-brand-indigo to-brand-purple hover:brightness-110 text-white font-bold text-xs rounded-xl shadow-lg transition-all"
+                >
+                  Configure Budget
+                </button>
+              </form>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* 4. Import CSV Modal */}
+      <AnimatePresence>
+        {showImport && (
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <motion.div 
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              className="bg-slate-900 border border-white/10 w-full max-w-sm rounded-2xl shadow-xl overflow-hidden"
+            >
+              <div className="p-4 border-b border-white/5 flex justify-between items-center bg-slate-950/40">
+                <span className="font-bold text-sm text-white">Import Bank Statement</span>
+                <button onClick={() => setShowImport(false)} className="p-1 rounded-lg text-gray-400 hover:bg-slate-800"><X className="h-5 w-5" /></button>
+              </div>
+
+              <form onSubmit={handleImport} className="p-6 space-y-4">
+                <div className="border-2 border-dashed border-white/10 hover:border-brand-purple/40 rounded-xl p-6 text-center cursor-pointer relative transition-all">
+                  <input 
+                    type="file" accept=".csv" required
+                    onChange={e => setImportFile(e.target.files[0])}
+                    className="absolute inset-0 opacity-0 cursor-pointer"
+                  />
+                  <Upload className="h-8 w-8 text-gray-500 mx-auto mb-2" />
+                  <span className="text-xs font-bold text-gray-300 block">
+                    {importFile ? importFile.name : 'Select statement CSV file'}
+                  </span>
+                  <span className="text-[10px] text-gray-500 mt-1 block">Expected fields: Date, Title, Type, Category, Amount</span>
+                </div>
+
+                <button 
+                  type="submit"
+                  disabled={!importFile}
+                  className="w-full py-2.5 bg-gradient-to-r from-brand-indigo to-brand-purple hover:brightness-110 disabled:opacity-50 text-white font-bold text-xs rounded-xl shadow-lg transition-all"
+                >
+                  Parse & Import Entries
+                </button>
+              </form>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+    </div>
+  );
+}
