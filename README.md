@@ -119,10 +119,10 @@ On system startup, the local JSON database is pre-seeded with these test credent
 
 ### 👨💼 System Administrator Account
 - **Email**: `admin@budgetwise.com`
-- **Password**: `adminpassword`
+- **Password**: `
 - *Accesses the complete System Admin Dashboard with User suspension toggles, suspicious transaction alerts, and broadcast forms.*
 
 ### 👤 Regular User Account
 - **Email**: `piyush@gmail.com`
-- **Password**: `password123`
+- **Password**: 
 - *Accesses the gamified dashboard, wallet logs, savings trackers, reports, and AI advisor.*
