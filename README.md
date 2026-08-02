@@ -22,6 +22,7 @@ Designed with a sleek glassmorphic theme supporting seamless **Light & Dark mode
 - **Payment & Premium Simulator**: Complete Razorpay-styled premium upgrade checkout widget simulation (UPI, netbanking, cards) with transaction log ledgers.
 - **Auto-Billing Scheduler**: Startup cron job checks upcoming EMI cycles, subscription billings, and utility reminders, automatically deducting balances from wallets and logging notification cards.
 - **Export Formats**: Generate detailed statements in PDF format (using `pdfkit`) or raw Excel spreadsheets (using `xlsx`).
+- **Dynamic Theme Switcher**: One-click Sun ☀️ / Moon 🌙 theme toggle integrated into the header, dynamically remapping styling layouts and persisting preference parameters to the user profile settings.
 
 ### 👨💼 Admin Control Panel (System Console)
 - **Interactive Analytics**: Monitor total registered users, active user ratios, monthly signup trends, and total premium subscription revenue charts.
