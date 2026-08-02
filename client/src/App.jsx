@@ -95,6 +95,10 @@ export default function App() {
       dispatch(setSummary(summaryRes.data));
     } catch (err) {
       console.error('Failed to load user state:', err.message);
+      if (err.response && err.response.status === 401) {
+        dispatch(logout());
+        navigate('/login');
+      }
     }
   };
 
