@@ -229,12 +229,12 @@ export default function AdminDashboard() {
       <aside className="w-64 bg-slate-950 border-r border-white/5 py-6 px-4 shrink-0 flex flex-col justify-between">
         <div>
           <div className="flex items-center gap-3 px-3 mb-8">
-            <div className="bg-red-500/10 p-2.5 rounded-xl shadow-lg border border-red-500/10">
-              <ShieldCheck className="h-6 w-6 text-red-500" />
+            <div className="bg-brand-indigo/10 p-2.5 rounded-xl shadow-lg border border-brand-indigo/20">
+              <ShieldCheck className="h-6 w-6 text-brand-indigo" />
             </div>
             <div>
               <span className="font-display font-extrabold text-lg text-white">System Admin</span>
-              <span className="text-[10px] block font-semibold text-red-400 tracking-wider uppercase">BudgetWise Console</span>
+              <span className="text-[10px] block font-semibold text-brand-purple tracking-wider uppercase">BudgetWise Console</span>
             </div>
           </div>
 
@@ -257,11 +257,11 @@ export default function AdminDashboard() {
                   onClick={() => setActiveTab(tab.id)}
                   className={`flex items-center gap-3 w-full text-left px-4 py-3 rounded-xl text-sm font-medium transition-all ${
                     isActive
-                      ? 'bg-red-500/10 text-red-400 border border-red-500/20'
+                      ? 'bg-brand-indigo/10 text-brand-indigo border border-brand-indigo/20'
                       : 'text-gray-400 hover:bg-slate-900/50 hover:text-white border border-transparent'
                   }`}
                 >
-                  <Icon className={`h-4.5 w-4.5 ${isActive ? 'text-red-500' : 'text-gray-400'}`} />
+                  <Icon className={`h-4.5 w-4.5 ${isActive ? 'text-brand-indigo' : 'text-gray-400'}`} />
                   {tab.name}
                 </button>
               );
@@ -272,7 +272,7 @@ export default function AdminDashboard() {
         {/* Admin profile Summary at Bottom */}
         <div className="border-t border-white/5 pt-4">
           <div className="flex items-center gap-3 px-2 mb-4">
-            <div className="h-10 w-10 rounded-full bg-gradient-to-tr from-red-600 to-rose-400 flex items-center justify-center font-bold text-white shadow-inner">
+            <div className="h-10 w-10 rounded-full bg-gradient-to-tr from-brand-indigo to-brand-purple flex items-center justify-center font-bold text-white shadow-inner">
               A
             </div>
             <div>
@@ -308,13 +308,13 @@ export default function AdminDashboard() {
               {(settings?.theme || 'dark') === 'dark' ? (
                 <Sun className="h-5 w-5 text-yellow-500" />
               ) : (
-                <Moon className="h-5 w-5 text-red-500" />
+                <Moon className="h-5 w-5 text-brand-purple" />
               )}
             </button>
 
-            <div className="flex items-center gap-3 bg-red-500/10 border border-red-500/20 px-3.5 py-1.5 rounded-full">
+            <div className="flex items-center gap-3 bg-brand-indigo/10 border border-brand-indigo/20 px-3.5 py-1.5 rounded-full">
               <span className="h-2 w-2 rounded-full bg-emerald-400 animate-ping" />
-              <span className="text-xs font-bold text-red-400">Production Mode Online</span>
+              <span className="text-xs font-bold text-brand-indigo">Production Mode Online</span>
             </div>
           </div>
         </header>
@@ -334,7 +334,7 @@ export default function AdminDashboard() {
                 {/* Metric grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                   {[
-                    { title: 'Total Registered Users', value: metrics.totalUsers || 0, icon: Users, color: 'text-red-400 bg-red-500/10' },
+                    { title: 'Total Registered Users', value: metrics.totalUsers || 0, icon: Users, color: 'text-brand-indigo bg-brand-indigo/10' },
                     { title: 'Premium Subscribers', value: metrics.premiumUsers || 0, icon: UserCheck, color: 'text-yellow-400 bg-yellow-500/10' },
                     { title: 'Gross Revenue Rec.', value: `₹${metrics.totalRevenue || 0}`, icon: Coins, color: 'text-emerald-400 bg-emerald-500/10' },
                     { title: 'Flagged Transactions', value: metrics.flaggedTransactions || 0, icon: AlertTriangle, color: 'text-rose-400 bg-rose-500/10' },
@@ -386,7 +386,7 @@ export default function AdminDashboard() {
                       ) : (
                         adminLogs.map((log, i) => (
                           <div key={i} className="bg-slate-900/40 border border-white/5 p-3 rounded-xl space-y-1">
-                            <span className="text-[10px] font-bold text-red-400 block">{log.action}</span>
+                            <span className="text-[10px] font-bold text-brand-purple block">{log.action}</span>
                             <span className="text-[10px] text-gray-300 block">Target: {log.targetUser}</span>
                             <span className="text-[8px] text-gray-500 block">{new Date(log.timestamp).toLocaleString()}</span>
                           </div>
@@ -589,7 +589,7 @@ export default function AdminDashboard() {
                     </div>
                     <button 
                       type="submit"
-                      className="w-full py-2.5 bg-gradient-to-r from-red-600 to-rose-500 hover:brightness-110 text-white font-extrabold text-xs rounded-xl shadow-lg transition-all"
+                      className="w-full py-2.5 bg-gradient-to-r from-brand-indigo to-brand-purple hover:brightness-110 text-white font-extrabold text-xs rounded-xl shadow-lg transition-all"
                     >
                       Publish Category
                     </button>
@@ -603,7 +603,7 @@ export default function AdminDashboard() {
                     {['Food', 'Shopping', 'Travel', 'Medical', 'Education', 'Investment', 'Rent', 'Bills', 'Fuel'].map((cat) => (
                       <div key={cat} className="bg-slate-900 border border-white/5 p-4 rounded-xl flex items-center justify-between">
                         <span className="text-xs font-bold text-white">{cat}</span>
-                        <span className="h-3 w-3 rounded-full bg-red-500" />
+                        <span className="h-3 w-3 rounded-full bg-brand-indigo" />
                       </div>
                     ))}
                   </div>
@@ -620,7 +620,7 @@ export default function AdminDashboard() {
                 className="max-w-xl glass-panel p-6 rounded-3xl"
               >
                 <h3 className="text-base font-bold text-white mb-4 flex items-center gap-1.5">
-                  <BellRing className="h-5 w-5 text-red-500" />
+                  <BellRing className="h-5 w-5 text-brand-purple" />
                   Broadcast System Announcement
                 </h3>
                 
@@ -631,7 +631,7 @@ export default function AdminDashboard() {
                       type="text" required placeholder="eg. Scheduled Maintenance Tomorrow"
                       value={alertForm.title}
                       onChange={e => setAlertForm({ ...alertForm, title: e.target.value })}
-                      className="w-full bg-slate-950 border border-white/10 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-red-500/40"
+                      className="w-full bg-slate-950 border border-white/10 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-brand-indigo/40"
                     />
                   </div>
 
@@ -654,13 +654,13 @@ export default function AdminDashboard() {
                       required rows="4" placeholder="Type notification contents here..."
                       value={alertForm.message}
                       onChange={e => setAlertForm({ ...alertForm, message: e.target.value })}
-                      className="w-full bg-slate-950 border border-white/10 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none resize-none focus:border-red-500/40"
+                      className="w-full bg-slate-950 border border-white/10 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none resize-none focus:border-brand-indigo/40"
                     />
                   </div>
 
                   <button 
                     type="submit"
-                    className="w-full py-2.5 bg-gradient-to-r from-red-600 to-rose-500 hover:brightness-110 text-white font-extrabold text-xs rounded-xl shadow-lg transition-all"
+                    className="w-full py-2.5 bg-gradient-to-r from-brand-indigo to-brand-purple hover:brightness-110 text-white font-extrabold text-xs rounded-xl shadow-lg transition-all"
                   >
                     Broadcast to All User Inboxes
                   </button>
@@ -692,8 +692,8 @@ export default function AdminDashboard() {
                           <p className="text-xs text-gray-300 italic">"{fb.comment}"</p>
                           
                           {fb.reply ? (
-                            <div className="bg-slate-950/40 border-l-2 border-red-500 p-3 rounded-lg text-xs mt-2">
-                              <span className="text-[10px] font-bold text-red-400 block mb-0.5">Admin Response:</span>
+                            <div className="bg-slate-950/40 border-l-2 border-brand-indigo p-3 rounded-lg text-xs mt-2">
+                              <span className="text-[10px] font-bold text-brand-indigo block mb-0.5">Admin Response:</span>
                               <span className="text-gray-400">"{fb.reply}"</span>
                             </div>
                           ) : (
@@ -784,7 +784,7 @@ export default function AdminDashboard() {
                         type="text" required
                         value={configSettings.appName}
                         onChange={e => setConfigSettings({ ...configSettings, appName: e.target.value })}
-                        className="w-full bg-slate-950 border border-white/10 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-red-500/40"
+                        className="w-full bg-slate-950 border border-white/10 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-brand-indigo/40"
                       />
                     </div>
                     <div>
@@ -793,7 +793,7 @@ export default function AdminDashboard() {
                         type="number" required
                         value={configSettings.taxRate}
                         onChange={e => setConfigSettings({ ...configSettings, taxRate: e.target.value })}
-                        className="w-full bg-slate-950 border border-white/10 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-red-500/40"
+                        className="w-full bg-slate-950 border border-white/10 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-brand-indigo/40"
                       />
                     </div>
                   </div>
@@ -823,7 +823,7 @@ export default function AdminDashboard() {
                       type="checkbox" id="maint-toggle"
                       checked={configSettings.maintenanceMode}
                       onChange={e => setConfigSettings({ ...configSettings, maintenanceMode: e.target.checked })}
-                      className="h-4 w-4 bg-slate-950 border border-white/10 rounded focus:ring-red-500 text-red-500"
+                      className="h-4 w-4 bg-slate-950 border border-white/10 rounded focus:ring-brand-indigo text-brand-indigo"
                     />
                     <div className="ml-3">
                       <label htmlFor="maint-toggle" className="text-xs font-bold text-rose-400 block cursor-pointer">
@@ -837,7 +837,7 @@ export default function AdminDashboard() {
 
                   <button 
                     type="submit"
-                    className="py-2.5 bg-gradient-to-r from-red-600 to-rose-500 text-white font-extrabold text-xs px-6 rounded-xl shadow-lg transition-all ml-auto block"
+                    className="py-2.5 bg-gradient-to-r from-brand-indigo to-brand-purple text-white font-extrabold text-xs px-6 rounded-xl shadow-lg transition-all ml-auto block"
                   >
                     Save System Variables
                   </button>
