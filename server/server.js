@@ -182,6 +182,18 @@ async function runScheduler() {
   }
 }
 
+// Serve static assets in production
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, '../client/dist')));
+  app.get('*', (req, res) => {
+    res.sendFile(path.resolve(__dirname, '../client', 'dist', 'index.html'));
+  });
+} else {
+  app.get('/', (req, res) => {
+    res.send('BudgetWise AI API is running in Development mode...');
+  });
+}
+
 // Connect Database and start server
 connectDB().then(async () => {
   await seedDatabase();
