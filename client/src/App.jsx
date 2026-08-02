@@ -17,7 +17,7 @@ import Login from './pages/Login.jsx';
 import Signup from './pages/Signup.jsx';
 import AdminDashboard from './pages/AdminDashboard.jsx';
 
-import { authSuccess, loadProfile } from './store/authSlice.js';
+import { authSuccess, loadProfile, logout } from './store/authSlice.js';
 import {
   setWallets,
   setTransactions,
