@@ -33,6 +33,8 @@ export const signup = async (req, res) => {
       name,
       email: email.toLowerCase(),
       password: hashedPassword,
+      role: 'user',
+      status: 'active'
     });
 
     // Create default setting
@@ -228,7 +230,9 @@ export const googleLogin = async (req, res) => {
       user = await User.create({
         name,
         email: email.toLowerCase(),
-        password: mockPassword
+        password: mockPassword,
+        role: 'user',
+        status: 'active'
       });
       await Setting.create({ userId: user._id });
       await Wallet.create({ userId: user._id, name: 'Cash Wallet', type: 'cash', balance: 0 });

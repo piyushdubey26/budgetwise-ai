@@ -455,8 +455,8 @@ export default function AdminDashboard() {
                             <td className="py-4 px-6 font-bold text-white">{u.name}</td>
                             <td className="py-4 px-6">{u.email}</td>
                             <td className="py-4 px-6">
-                              <span className={`px-2 py-0.5 rounded font-extrabold uppercase text-[10px] ${u.role === 'admin' ? 'bg-brand-purple/10 text-brand-purple' : 'bg-slate-800 text-gray-400'}`}>
-                                {u.role}
+                              <span className={`px-2 py-0.5 rounded font-extrabold uppercase text-[10px] ${(u.role || 'user') === 'admin' ? 'bg-brand-purple/10 text-brand-purple' : 'bg-slate-800 text-gray-400'}`}>
+                                {u.role || 'user'}
                               </span>
                             </td>
                             <td className="py-4 px-6">{u.country}</td>
@@ -466,34 +466,34 @@ export default function AdminDashboard() {
                               </span>
                             </td>
                             <td className="py-4 px-6">
-                              <span className={`px-2 py-0.5 rounded font-extrabold ${u.status === 'suspended' ? 'bg-rose-500/10 text-rose-400' : 'bg-emerald-500/10 text-emerald-400'}`}>
-                                {u.status}
+                              <span className={`px-2 py-0.5 rounded font-extrabold ${(u.status || 'active') === 'suspended' ? 'bg-rose-500/10 text-rose-400' : 'bg-emerald-500/10 text-emerald-400'}`}>
+                                {u.status || 'active'}
                               </span>
                             </td>
                             <td className="py-4 px-6 text-center flex items-center justify-center gap-2">
                               {u._id !== user?.id ? (
                                 <>
                                   <button 
-                                    onClick={() => handleToggleRole(u._id, u.role)}
+                                    onClick={() => handleToggleRole(u._id, u.role || 'user')}
                                     className={`p-1.5 rounded-lg border transition-all ${
-                                      u.role === 'admin' 
+                                      (u.role || 'user') === 'admin' 
                                         ? 'border-brand-purple/20 text-brand-purple hover:bg-brand-purple/10' 
                                         : 'border-gray-500/20 text-gray-400 hover:bg-white/10'
                                     }`}
-                                    title={u.role === 'admin' ? 'Demote to Regular User' : 'Promote to Admin'}
+                                    title={(u.role || 'user') === 'admin' ? 'Demote to Regular User' : 'Promote to Admin'}
                                   >
                                     <UserCheck className="h-3.5 w-3.5" />
                                   </button>
                                   <button 
-                                    onClick={() => handleToggleSuspend(u._id, u.status)}
+                                    onClick={() => handleToggleSuspend(u._id, u.status || 'active')}
                                     className={`p-1.5 rounded-lg border transition-all ${
-                                      u.status === 'suspended' 
+                                      (u.status || 'active') === 'suspended' 
                                         ? 'border-emerald-500/20 hover:bg-emerald-500/15 text-emerald-400' 
                                         : 'border-rose-500/20 hover:bg-rose-500/15 text-rose-400'
                                     }`}
-                                    title={u.status === 'suspended' ? 'Activate User' : 'Suspend User'}
+                                    title={(u.status || 'active') === 'suspended' ? 'Activate User' : 'Suspend User'}
                                   >
-                                    {u.status === 'suspended' ? <Unlock className="h-3.5 w-3.5" /> : <Lock className="h-3.5 w-3.5" />}
+                                    {(u.status || 'active') === 'suspended' ? <Unlock className="h-3.5 w-3.5" /> : <Lock className="h-3.5 w-3.5" />}
                                   </button>
                                   <button 
                                     onClick={() => handleTogglePremium(u._id, u.isPremium)}
