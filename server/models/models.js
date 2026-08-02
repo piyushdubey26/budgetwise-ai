@@ -129,7 +129,8 @@ export const Setting = defineModel('Setting', {
   theme: { type: String, default: 'dark' },
   language: { type: String, default: 'en' },
   timezone: { type: String, default: 'Asia/Kolkata' },
-  notificationsEnabled: { type: Boolean, default: true }
+  notificationsEnabled: { type: Boolean, default: true },
+  manualNetWorth: { type: Number, default: null }
 });
 
 // ==========================================

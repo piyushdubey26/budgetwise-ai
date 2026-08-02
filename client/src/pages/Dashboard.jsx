@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { motion } from 'framer-motion';
 import { 
   ResponsiveContainer, 
@@ -26,9 +26,12 @@ import {
   ArrowRight,
   Plus,
   Compass,
-  Wallet
+  Wallet,
+  Edit3
 } from 'lucide-react';
 import { useNavigate, Link } from 'react-router-dom';
+import { updateLocalSettings } from '../store/authSlice.js';
+import axios from 'axios';
 
 const CATEGORY_COLORS = {
   Food: '#a78bfa',        // Violet
@@ -45,9 +48,36 @@ const CATEGORY_COLORS = {
 
 export default function Dashboard({ refresh }) {
   const navigate = useNavigate();
-  const { user } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+  const { user, settings } = useSelector((state) => state.auth);
   const { summary, transactions, wallets, goals, budgets } = useSelector((state) => state.finance);
   const [heatmapDays, setHeatmapDays] = useState([]);
+
+  const [isEditingNetWorth, setIsEditingNetWorth] = useState(false);
+  const [customNetWorth, setCustomNetWorth] = useState('');
+
+  const handleSaveNetWorth = async () => {
+    const val = customNetWorth === '' ? null : Number(customNetWorth);
+    try {
+      await axios.put('/api/auth/settings', { manualNetWorth: val });
+      dispatch(updateLocalSettings({ manualNetWorth: val }));
+      setIsEditingNetWorth(false);
+      if (refresh) refresh();
+    } catch (e) {
+      console.error('Failed to update manual Net Worth:', e.message);
+    }
+  };
+
+  const handleResetNetWorth = async () => {
+    try {
+      await axios.put('/api/auth/settings', { manualNetWorth: null });
+      dispatch(updateLocalSettings({ manualNetWorth: null }));
+      setIsEditingNetWorth(false);
+      if (refresh) refresh();
+    } catch (e) {
+      console.error('Failed to reset Net Worth:', e.message);
+    }
+  };
 
   useEffect(() => {
     if (refresh) refresh();
@@ -194,20 +224,62 @@ export default function Dashboard({ refresh }) {
         
         {/* Net Worth */}
         <motion.div 
-          whileHover={{ y: -4 }}
-          className="glass-panel p-6 rounded-2xl flex flex-col justify-between h-36"
+          whileHover={!isEditingNetWorth ? { y: -4 } : {}}
+          className="glass-panel p-6 rounded-2xl flex flex-col justify-between h-36 relative overflow-hidden"
         >
           <div className="flex justify-between items-start">
             <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">Net Worth</span>
-            <div className="p-2 bg-brand-purple/10 rounded-xl">
-              <TrendingUp className="h-5 w-5 text-brand-purple" />
-            </div>
+            {!isEditingNetWorth && (
+              <div className="p-2 bg-brand-purple/10 rounded-xl">
+                <TrendingUp className="h-5 w-5 text-brand-purple" />
+              </div>
+            )}
           </div>
           <div>
-            <h3 className="text-2xl font-bold text-white mt-2">
-              ₹{summary.netWorth?.toLocaleString()}
-            </h3>
-            <span className="text-[10px] text-brand-purple font-semibold">Wallets + Investments - Debts</span>
+            {isEditingNetWorth ? (
+              <div className="flex flex-col gap-1 mt-1">
+                <div className="flex gap-1.5">
+                  <input 
+                    type="number" 
+                    placeholder="Value (eg. 50000)"
+                    value={customNetWorth}
+                    onChange={e => setCustomNetWorth(e.target.value)}
+                    className="bg-slate-950 border border-white/10 rounded-lg px-2 py-0.5 text-xs text-white focus:outline-none w-full"
+                  />
+                  <button 
+                    onClick={handleSaveNetWorth}
+                    className="bg-brand-indigo hover:bg-brand-purple px-2 py-0.5 rounded-lg text-[10px] font-bold text-white transition-all cursor-pointer"
+                  >
+                    Save
+                  </button>
+                </div>
+                <div className="flex justify-between items-center text-[9px] text-gray-400 mt-0.5">
+                  <button onClick={handleResetNetWorth} className="hover:text-white underline cursor-pointer">Reset to Auto</button>
+                  <button onClick={() => setIsEditingNetWorth(false)} className="hover:text-white cursor-pointer">Cancel</button>
+                </div>
+              </div>
+            ) : (
+              <div className="flex justify-between items-end">
+                <div>
+                  <h3 className="text-2xl font-bold text-white mt-1">
+                    ₹{summary.netWorth?.toLocaleString()}
+                  </h3>
+                  <span className="text-[10px] text-brand-purple font-semibold">
+                    {settings?.manualNetWorth !== undefined && settings?.manualNetWorth !== null ? 'Manual Override' : 'Wallets + Investments - Debts'}
+                  </span>
+                </div>
+                <button 
+                  onClick={() => {
+                    setCustomNetWorth(settings?.manualNetWorth !== undefined && settings?.manualNetWorth !== null ? settings.manualNetWorth : (summary.netWorth || ''));
+                    setIsEditingNetWorth(true);
+                  }}
+                  className="p-1.5 hover:bg-slate-800 rounded-lg text-gray-500 hover:text-white transition-all cursor-pointer"
+                  title="Edit Net Worth Manually"
+                >
+                  <Edit3 className="h-3.5 w-3.5" />
+                </button>
+              </div>
+            )}
           </div>
         </motion.div>
 

@@ -9,7 +9,8 @@ import {
   Debt,
   Emi,
   Notification,
-  User
+  User,
+  Setting
 } from '../models/models.js';
 
 // Helper to gain XP and Coins for Gamification
@@ -612,6 +613,7 @@ export const getDashboardSummary = async (req, res) => {
     const debts = await Debt.find({ userId });
     const EMIs = await Emi.find({ userId });
     const budgets = await Budget.find({ userId, month: currentMonth });
+    const setting = await Setting.findOne({ userId });
 
     // Net Worth Calculation:
     // (Sum of Wallets where type != credit_card) + (Sum of investments current value) - (Sum of debts type=borrow pending) - (Credit card dues, i.e. Wallets of type credit_card balance if credit card is positive debt or negative wallet)
@@ -627,7 +629,10 @@ export const getDashboardSummary = async (req, res) => {
     const lendDebtSum = debts.filter(d => d.type === 'lend' && d.status === 'pending').reduce((sum, d) => sum + d.amount, 0);
     const emiSum = EMIs.reduce((sum, e) => sum + (e.remainingAmount || 0), 0);
 
-    const netWorth = walletSum + investmentSum - borrowDebtSum - emiSum;
+    const calculatedNetWorth = walletSum + investmentSum - borrowDebtSum - emiSum;
+    const netWorth = (setting && setting.manualNetWorth !== undefined && setting.manualNetWorth !== null)
+      ? setting.manualNetWorth
+      : calculatedNetWorth;
 
     // Filter current month transactions
     const monthTrans = transactions.filter(t => t.date.substring(0, 7) === currentMonth);

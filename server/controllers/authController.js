@@ -192,7 +192,7 @@ export const getProfile = async (req, res) => {
 
 export const updateSettings = async (req, res) => {
   try {
-    const { currency, theme, language, timezone, notificationsEnabled } = req.body;
+    const { currency, theme, language, timezone, notificationsEnabled, manualNetWorth } = req.body;
     const userId = req.user.id;
 
     let setting = await Setting.findOne({ userId });
@@ -205,7 +205,8 @@ export const updateSettings = async (req, res) => {
       theme,
       language,
       timezone,
-      notificationsEnabled
+      notificationsEnabled,
+      manualNetWorth
     });
 
     res.status(200).json({ message: 'Settings updated successfully.', settings: updated });
