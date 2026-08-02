@@ -23,7 +23,9 @@ import {
   Filter,
   CheckCircle,
   FileText,
-  UserCheck
+  UserCheck,
+  Sun,
+  Moon
 } from 'lucide-react';
 import { 
   ResponsiveContainer, 
