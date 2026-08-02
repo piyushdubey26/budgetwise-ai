@@ -15,7 +15,9 @@ import {
   Settings,
   X,
   FileSpreadsheet,
-  FileText
+  FileText,
+  Edit,
+  Check
 } from 'lucide-react';
 import axios from 'axios';
 
@@ -51,6 +53,48 @@ export default function Transactions({ refresh }) {
   const [transferForm, setTransferForm] = useState({ sourceWalletId: '', targetWalletId: '', amount: '' });
   const [budgetForm, setBudgetForm] = useState({ month: new Date().toISOString().substring(0, 7), category: 'All', amount: '' });
   const [importFile, setImportFile] = useState(null);
+
+  // Inline editing states
+  const [editingTxId, setEditingTxId] = useState(null);
+  const [editForm, setEditForm] = useState({
+    date: '',
+    title: '',
+    notes: '',
+    category: '',
+    paymentMode: '',
+    amount: '',
+    type: 'expense'
+  });
+
+  const startEditTx = (t) => {
+    setEditingTxId(t._id);
+    setEditForm({
+      date: t.date || new Date().toISOString().split('T')[0],
+      title: t.title || '',
+      notes: t.notes || '',
+      category: t.category || 'Food',
+      paymentMode: t.paymentMode || 'Cash Wallet',
+      amount: t.amount || 0,
+      type: t.type || 'expense'
+    });
+  };
+
+  const handleSaveEditTx = async (id) => {
+    try {
+      if (!editForm.title || !editForm.amount || !editForm.date) {
+        alert('Date, Title and Amount are required.');
+        return;
+      }
+      await axios.put(`/api/transactions/${id}`, {
+        ...editForm,
+        amount: parseFloat(editForm.amount)
+      });
+      setEditingTxId(null);
+      if (refresh) refresh();
+    } catch (e) {
+      alert(e.response?.data?.message || 'Failed to update transaction');
+    }
+  };
 
   const handleDeleteTx = async (id) => {
     try {
@@ -302,43 +346,159 @@ export default function Transactions({ refresh }) {
                       </td>
                     </tr>
                   ) : (
-                    filteredTx.map(t => (
-                      <tr key={t._id} className="hover:bg-slate-900/25 transition-colors">
-                        <td className="py-4 px-6 text-xs text-gray-400 whitespace-nowrap">{t.date}</td>
-                        <td className="py-4 px-6">
-                          <div>
-                            <span className="font-semibold text-white block">{t.title}</span>
-                            {t.notes && <span className="text-[10px] text-gray-500 block truncate w-48">{t.notes}</span>}
-                            {t.tags && t.tags.length > 0 && (
-                              <div className="flex gap-1 mt-1">
-                                {t.tags.map(tag => (
-                                  <span key={tag} className="text-[9px] bg-slate-800 text-slate-300 px-1.5 py-0.5 rounded font-medium">#{tag}</span>
-                                ))}
+                    filteredTx.map(t => {
+                      const isEditing = t._id === editingTxId;
+                      return (
+                        <tr key={t._id} className="hover:bg-slate-900/25 transition-colors">
+                          {/* Date Column */}
+                          <td className="py-4 px-6 text-xs text-gray-400 whitespace-nowrap">
+                            {isEditing ? (
+                              <input 
+                                type="date" 
+                                value={editForm.date} 
+                                onChange={e => setEditForm({ ...editForm, date: e.target.value })}
+                                className="bg-slate-950 border border-white/10 rounded px-2.5 py-1 text-xs text-white focus:outline-none w-32"
+                              />
+                            ) : (
+                              t.date
+                            )}
+                          </td>
+
+                          {/* Description/Notes Column */}
+                          <td className="py-4 px-6">
+                            {isEditing ? (
+                              <div className="space-y-1.5 min-w-[200px]">
+                                <input 
+                                  type="text" 
+                                  placeholder="Description"
+                                  value={editForm.title} 
+                                  onChange={e => setEditForm({ ...editForm, title: e.target.value })}
+                                  className="bg-slate-950 border border-white/10 rounded px-2 py-1 text-xs text-white font-semibold focus:outline-none w-full"
+                                />
+                                <input 
+                                  type="text" 
+                                  placeholder="Notes"
+                                  value={editForm.notes} 
+                                  onChange={e => setEditForm({ ...editForm, notes: e.target.value })}
+                                  className="bg-slate-950 border border-white/10 rounded px-2 py-0.5 text-[10px] text-gray-400 focus:outline-none w-full"
+                                />
+                              </div>
+                            ) : (
+                              <div>
+                                <span className="font-semibold text-white block">{t.title}</span>
+                                {t.notes && <span className="text-[10px] text-gray-500 block truncate w-48">{t.notes}</span>}
+                                {t.tags && t.tags.length > 0 && (
+                                  <div className="flex gap-1 mt-1">
+                                    {t.tags.map(tag => (
+                                      <span key={tag} className="text-[9px] bg-slate-800 text-slate-300 px-1.5 py-0.5 rounded font-medium">#{tag}</span>
+                                    ))}
+                                  </div>
+                                )}
                               </div>
                             )}
-                          </div>
-                        </td>
-                        <td className="py-4 px-6">
-                          <span className="text-xs bg-slate-900 border border-white/5 px-2.5 py-1 rounded-full font-bold text-gray-300">
-                            {t.category || 'Other'}
-                          </span>
-                        </td>
-                        <td className="py-4 px-6 text-xs text-gray-400">{t.paymentMode || 'Transfer'}</td>
-                        <td className="py-4 px-6 text-right">
-                          <span className={`font-extrabold text-sm ${t.type === 'income' ? 'text-emerald-400' : t.type === 'transfer' ? 'text-blue-400' : 'text-rose-400'}`}>
-                            {t.type === 'income' ? '+' : '-'} ₹{t.amount.toLocaleString()}
-                          </span>
-                        </td>
-                        <td className="py-4 px-6 text-center">
-                          <button 
-                            onClick={() => handleDeleteTx(t._id)}
-                            className="p-1.5 rounded-lg text-gray-500 hover:text-rose-400 hover:bg-rose-500/10 transition-colors"
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </button>
-                        </td>
-                      </tr>
-                    ))
+                          </td>
+
+                          {/* Category Column */}
+                          <td className="py-4 px-6">
+                            {isEditing ? (
+                              <select 
+                                value={editForm.category} 
+                                onChange={e => setEditForm({ ...editForm, category: e.target.value })}
+                                className="bg-slate-950 border border-white/10 rounded px-2 py-1 text-xs text-white focus:outline-none w-28 cursor-pointer"
+                              >
+                                {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+                              </select>
+                            ) : (
+                              <span className="text-xs bg-slate-900 border border-white/5 px-2.5 py-1 rounded-full font-bold text-gray-300">
+                                {t.category || 'Other'}
+                              </span>
+                            )}
+                          </td>
+
+                          {/* Payment Mode Column */}
+                          <td className="py-4 px-6 text-xs text-gray-400">
+                            {isEditing ? (
+                              <select 
+                                value={editForm.paymentMode} 
+                                onChange={e => setEditForm({ ...editForm, paymentMode: e.target.value })}
+                                className="bg-slate-950 border border-white/10 rounded px-2 py-1 text-xs text-white focus:outline-none w-32 cursor-pointer"
+                              >
+                                {wallets.map(w => <option key={w._id} value={w.name}>{w.name}</option>)}
+                                <option value="Cash Wallet">Cash Wallet</option>
+                              </select>
+                            ) : (
+                              t.paymentMode || 'Transfer'
+                            )}
+                          </td>
+
+                          {/* Amount Column */}
+                          <td className="py-4 px-6 text-right">
+                            {isEditing ? (
+                              <div className="flex flex-col items-end gap-1.5">
+                                <select 
+                                  value={editForm.type} 
+                                  onChange={e => setEditForm({ ...editForm, type: e.target.value })}
+                                  className="bg-slate-950 border border-white/10 rounded px-1.5 py-0.5 text-[10px] text-white focus:outline-none w-20 cursor-pointer"
+                                >
+                                  <option value="expense">Expense</option>
+                                  <option value="income">Income</option>
+                                  <option value="transfer">Transfer</option>
+                                </select>
+                                <input 
+                                  type="number" 
+                                  value={editForm.amount} 
+                                  onChange={e => setEditForm({ ...editForm, amount: e.target.value })}
+                                  className="bg-slate-950 border border-white/10 rounded px-2 py-1 text-xs text-right text-white focus:outline-none w-24"
+                                />
+                              </div>
+                            ) : (
+                              <span className={`font-extrabold text-sm ${t.type === 'income' ? 'text-emerald-400' : t.type === 'transfer' ? 'text-blue-400' : 'text-rose-400'}`}>
+                                {t.type === 'income' ? '+' : '-'} ₹{t.amount.toLocaleString()}
+                              </span>
+                            )}
+                          </td>
+
+                          {/* Actions Column */}
+                          <td className="py-4 px-6 text-center">
+                            {isEditing ? (
+                              <div className="flex justify-center gap-1.5">
+                                <button 
+                                  onClick={() => handleSaveEditTx(t._id)}
+                                  className="p-1.5 text-emerald-400 hover:bg-emerald-500/10 rounded-lg transition-colors cursor-pointer"
+                                  title="Save"
+                                >
+                                  <Check className="h-4 w-4" />
+                                </button>
+                                <button 
+                                  onClick={() => setEditingTxId(null)}
+                                  className="p-1.5 text-gray-400 hover:bg-white/10 rounded-lg transition-colors cursor-pointer"
+                                  title="Cancel"
+                                >
+                                  <X className="h-4 w-4" />
+                                </button>
+                              </div>
+                            ) : (
+                              <div className="flex justify-center gap-1">
+                                <button 
+                                  onClick={() => startEditTx(t)}
+                                  className="p-1.5 text-gray-500 hover:text-brand-purple hover:bg-brand-purple/10 rounded-lg transition-colors cursor-pointer"
+                                  title="Edit"
+                                >
+                                  <Edit className="h-4 w-4" />
+                                </button>
+                                <button 
+                                  onClick={() => handleDeleteTx(t._id)}
+                                  className="p-1.5 text-gray-500 hover:text-rose-400 hover:bg-rose-500/10 rounded-lg transition-colors cursor-pointer"
+                                  title="Delete"
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </button>
+                              </div>
+                            )}
+                          </td>
+                        </tr>
+                      );
+                    })
                   )}
                 </tbody>
               </table>

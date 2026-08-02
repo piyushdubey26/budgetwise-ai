@@ -47,6 +47,7 @@ router.post('/wallets', auth, finCtrl.createWallet);
 // ==========================================
 router.get('/transactions', auth, finCtrl.getTransactions);
 router.post('/transactions', auth, finCtrl.addTransaction);
+router.put('/transactions/:id', auth, finCtrl.updateTransaction);
 router.delete('/transactions/:id', auth, finCtrl.deleteTransaction);
 
 // ==========================================

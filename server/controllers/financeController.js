@@ -670,3 +670,75 @@ export const getDashboardSummary = async (req, res) => {
     res.status(500).json({ message: 'Error creating dashboard summary.', error: err.message });
   }
 };
+
+export const updateTransaction = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userId = req.user.id;
+    const { title, amount, type, category, date, paymentMode, notes, tags } = req.body;
+
+    const trans = await Transaction.findById(id);
+    if (!trans || trans.userId !== userId) {
+      return res.status(404).json({ message: 'Transaction not found.' });
+    }
+
+    const oldAmount = trans.amount;
+    const newAmount = parseFloat(amount);
+
+    // 1. Rollback old impact
+    if (trans.type === 'income') {
+      const wallet = await Wallet.findOne({ userId, name: trans.paymentMode });
+      if (wallet) {
+        await Wallet.findByIdAndUpdate(wallet._id, { balance: wallet.balance - oldAmount });
+      }
+    } else if (trans.type === 'expense') {
+      const wallet = await Wallet.findOne({ userId, name: trans.paymentMode });
+      if (wallet) {
+        await Wallet.findByIdAndUpdate(wallet._id, { balance: wallet.balance + oldAmount });
+      }
+      // Rollback budget
+      const transactionMonth = trans.date.substring(0, 7);
+      let budget = await Budget.findOne({ userId, month: transactionMonth, category: trans.category }) ||
+                     await Budget.findOne({ userId, month: transactionMonth, category: 'All' });
+      if (budget) {
+        await Budget.findByIdAndUpdate(budget._id, { spent: Math.max(0, budget.spent - oldAmount) });
+      }
+    }
+
+    // 2. Apply new impact
+    if (type === 'income') {
+      const wallet = await Wallet.findOne({ userId, name: paymentMode });
+      if (wallet) {
+        await Wallet.findByIdAndUpdate(wallet._id, { balance: wallet.balance + newAmount });
+      }
+    } else if (type === 'expense') {
+      const wallet = await Wallet.findOne({ userId, name: paymentMode });
+      if (wallet) {
+        await Wallet.findByIdAndUpdate(wallet._id, { balance: wallet.balance - newAmount });
+      }
+      // Apply budget
+      const transactionMonth = date.substring(0, 7);
+      let budget = await Budget.findOne({ userId, month: transactionMonth, category }) ||
+                     await Budget.findOne({ userId, month: transactionMonth, category: 'All' });
+      if (budget) {
+        await Budget.findByIdAndUpdate(budget._id, { spent: (budget.spent || 0) + newAmount });
+      }
+    }
+
+    // 3. Update transaction document
+    const updated = await Transaction.findByIdAndUpdate(id, {
+      title,
+      amount: newAmount,
+      type,
+      category,
+      date,
+      paymentMode,
+      notes,
+      tags: tags || []
+    });
+
+    res.status(200).json({ message: 'Transaction updated successfully.', transaction: updated });
+  } catch (err) {
+    res.status(500).json({ message: 'Error updating transaction.', error: err.message });
+  }
+};
