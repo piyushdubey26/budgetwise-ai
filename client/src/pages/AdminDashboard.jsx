@@ -160,9 +160,10 @@ export default function AdminDashboard() {
     }
     try {
       await axios.put(`/api/admin/users/${userId}`, { role: nextRole });
+      alert(`Role successfully updated to ${nextRole.toUpperCase()}!`);
       fetchAdminData();
     } catch (err) {
-      alert('Failed to update user role');
+      alert('Failed to update user role: ' + (err.response?.data?.message || err.message));
     }
   };
 
