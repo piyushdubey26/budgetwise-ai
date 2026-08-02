@@ -150,6 +150,20 @@ export default function AdminDashboard() {
     }
   };
 
+  const handleToggleRole = async (userId, currentRole) => {
+    const nextRole = currentRole === 'admin' ? 'user' : 'admin';
+    if (userId === user?.id) {
+      alert("You cannot change your own admin role!");
+      return;
+    }
+    try {
+      await axios.put(`/api/admin/users/${userId}`, { role: nextRole });
+      fetchAdminData();
+    } catch (err) {
+      alert('Failed to update user role');
+    }
+  };
+
   const handleDeleteUser = async (userId) => {
     if (!confirm('Are you sure you want to permanently delete this user account and wipe all transactions?')) return;
     try {
@@ -426,6 +440,7 @@ export default function AdminDashboard() {
                         <tr className="border-b border-white/5 bg-slate-950/60 text-gray-400 font-bold uppercase">
                           <th className="py-4 px-6">Name</th>
                           <th className="py-4 px-6">Email</th>
+                          <th className="py-4 px-6">Role</th>
                           <th className="py-4 px-6">Country</th>
                           <th className="py-4 px-6">Plan status</th>
                           <th className="py-4 px-6">Status</th>
@@ -437,6 +452,11 @@ export default function AdminDashboard() {
                           <tr key={u._id} className="hover:bg-slate-900/20">
                             <td className="py-4 px-6 font-bold text-white">{u.name}</td>
                             <td className="py-4 px-6">{u.email}</td>
+                            <td className="py-4 px-6">
+                              <span className={`px-2 py-0.5 rounded font-extrabold uppercase text-[10px] ${u.role === 'admin' ? 'bg-brand-purple/10 text-brand-purple' : 'bg-slate-800 text-gray-400'}`}>
+                                {u.role}
+                              </span>
+                            </td>
                             <td className="py-4 px-6">{u.country}</td>
                             <td className="py-4 px-6">
                               <span className={`px-2 py-0.5 rounded font-extrabold ${u.isPremium ? 'bg-yellow-500/10 text-yellow-500' : 'bg-slate-800 text-gray-500'}`}>
@@ -449,8 +469,19 @@ export default function AdminDashboard() {
                               </span>
                             </td>
                             <td className="py-4 px-6 text-center flex items-center justify-center gap-2">
-                              {u.role !== 'admin' && (
+                              {u._id !== user?.id ? (
                                 <>
+                                  <button 
+                                    onClick={() => handleToggleRole(u._id, u.role)}
+                                    className={`p-1.5 rounded-lg border transition-all ${
+                                      u.role === 'admin' 
+                                        ? 'border-brand-purple/20 text-brand-purple hover:bg-brand-purple/10' 
+                                        : 'border-gray-500/20 text-gray-400 hover:bg-white/10'
+                                    }`}
+                                    title={u.role === 'admin' ? 'Demote to Regular User' : 'Promote to Admin'}
+                                  >
+                                    <UserCheck className="h-3.5 w-3.5" />
+                                  </button>
                                   <button 
                                     onClick={() => handleToggleSuspend(u._id, u.status)}
                                     className={`p-1.5 rounded-lg border transition-all ${
@@ -477,6 +508,8 @@ export default function AdminDashboard() {
                                     <Trash2 className="h-3.5 w-3.5" />
                                   </button>
                                 </>
+                              ) : (
+                                <span className="text-[10px] text-gray-500 font-bold italic">You (Session)</span>
                               )}
                             </td>
                           </tr>

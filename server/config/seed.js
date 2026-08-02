@@ -5,12 +5,12 @@ export async function seedDatabase() {
   try {
     // 1. Seed Admin Account
     const adminEmail = 'admin@budgetwise.com';
-    const existingAdmin = await User.findOne({ email: adminEmail });
+    let admin = await User.findOne({ email: adminEmail });
+    const hashedAdminPassword = await bcrypt.hash('adminpassword', 10);
     
-    if (!existingAdmin) {
+    if (!admin) {
       console.log('[Seeding] Creating default admin account...');
-      const hashedAdminPassword = await bcrypt.hash('adminpassword', 10);
-      const admin = await User.create({
+      admin = await User.create({
         name: 'Admin User',
         email: adminEmail,
         password: hashedAdminPassword,
@@ -19,6 +19,12 @@ export async function seedDatabase() {
         phone: '+919999999999'
       });
       console.log(`[Seeding] Admin pre-seeded: ${adminEmail} (password: adminpassword)`);
+    } else {
+      console.log('[Seeding] Admin account exists. Syncing password and role...');
+      await User.findByIdAndUpdate(admin._id, {
+        password: hashedAdminPassword,
+        role: 'admin'
+      });
     }
 
     // 2. Seed a few Mock Users

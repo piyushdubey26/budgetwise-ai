@@ -83,7 +83,7 @@ export const getAllUsers = async (req, res) => {
 export const updateUser = async (req, res) => {
   try {
     const { id } = req.params;
-    const { status, isPremium, phone, country } = req.body;
+    const { status, isPremium, phone, country, role } = req.body;
     
     const user = await User.findById(id);
     if (!user) return res.status(404).json({ message: 'User not found.' });
@@ -97,6 +97,10 @@ export const updateUser = async (req, res) => {
       updateData.isPremium = isPremium;
       updateData.premiumExpires = isPremium ? new Date(Date.now() + 365*24*60*60*1000).toISOString() : null;
       await logAdminAction(req.user.id, isPremium ? 'Grant Premium Plan' : 'Remove Premium Plan', user.email);
+    }
+    if (role !== undefined) {
+      updateData.role = role;
+      await logAdminAction(req.user.id, `Toggle User Role to: ${role}`, user.email);
     }
     if (phone !== undefined) updateData.phone = phone;
     if (country !== undefined) updateData.country = country;
