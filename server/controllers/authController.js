@@ -192,22 +192,21 @@ export const getProfile = async (req, res) => {
 
 export const updateSettings = async (req, res) => {
   try {
-    const { currency, theme, language, timezone, notificationsEnabled, manualNetWorth } = req.body;
-    const userId = req.user.id;
+    const fields = ['currency', 'theme', 'language', 'timezone', 'notificationsEnabled', 'manualNetWorth'];
+    const updateData = {};
+    fields.forEach(f => {
+      if (req.body[f] !== undefined) {
+        updateData[f] = req.body[f];
+      }
+    });
 
+    const userId = req.user.id;
     let setting = await Setting.findOne({ userId });
     if (!setting) {
       setting = await Setting.create({ userId });
     }
 
-    const updated = await Setting.findByIdAndUpdate(setting._id, {
-      currency,
-      theme,
-      language,
-      timezone,
-      notificationsEnabled,
-      manualNetWorth
-    });
+    const updated = await Setting.findByIdAndUpdate(setting._id, updateData);
 
     res.status(200).json({ message: 'Settings updated successfully.', settings: updated });
   } catch (err) {

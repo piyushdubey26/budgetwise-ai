@@ -65,6 +65,7 @@ export default function Dashboard({ refresh }) {
       if (refresh) refresh();
     } catch (e) {
       console.error('Failed to update manual Net Worth:', e.message);
+      alert('Failed to update Net Worth: ' + (e.response?.data?.message || e.message));
     }
   };
 
@@ -76,6 +77,7 @@ export default function Dashboard({ refresh }) {
       if (refresh) refresh();
     } catch (e) {
       console.error('Failed to reset Net Worth:', e.message);
+      alert('Failed to reset Net Worth: ' + (e.response?.data?.message || e.message));
     }
   };
 
