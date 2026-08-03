@@ -86,7 +86,7 @@ export default function Layout() {
               <Coins className="h-6 w-6 text-white" />
             </div>
             <div>
-              <span className="font-display font-extrabold text-xl tracking-tight bg-gradient-to-r from-white via-slate-200 to-brand-indigo bg-clip-text text-transparent">
+              <span className="logo-title">
                 BudgetWise
               </span>
               <span className="text-[10px] block font-semibold text-brand-purple tracking-widest uppercase">

@@ -62,6 +62,26 @@ html.light .page-title {
   background-image: linear-gradient(to right, #0f172a, #334155, #4f46e5);
 }
 
+.logo-title {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+}
+
+html.dark .logo-title {
+  background-image: linear-gradient(to right, #ffffff, #e2e8f0, #4f46e5);
+}
+
+html.light .logo-title {
+  background-image: linear-gradient(to right, #0f172a, #334155, #4f46e5);
+}
+
 .admin-page-title {
   font-family: var(--font-display);
   font-size: 1.875rem;
