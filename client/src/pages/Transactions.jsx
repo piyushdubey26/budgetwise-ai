@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
@@ -26,10 +27,18 @@ const CATEGORIES = [
 ];
 
 export default function Transactions({ refresh }) {
+  const [searchParams] = useSearchParams();
   const { transactions, wallets, budgets } = useSelector(state => state.finance);
   const { user } = useSelector(state => state.auth);
   
-  const [activeTab, setActiveTab] = useState('list'); // list, wallets, budgets
+  const [activeTab, setActiveTab] = useState(searchParams.get('tab') || 'list'); // list, wallets, budgets
+
+  useEffect(() => {
+    const tab = searchParams.get('tab');
+    if (tab) {
+      setActiveTab(tab);
+    }
+  }, [searchParams]);
   const [search, setSearch] = useState('');
   const [typeFilter, setTypeFilter] = useState('');
   const [catFilter, setCatFilter] = useState('');

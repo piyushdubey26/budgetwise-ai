@@ -459,28 +459,37 @@ export default function Dashboard({ refresh }) {
             <p className="text-gray-400 text-xs">Total remaining allowance this month</p>
           </div>
 
-          <div className="my-6">
-            <div className="flex justify-between items-baseline mb-2">
-              <span className="text-xs text-gray-400">Used: ₹{summary.budgetSpent?.toLocaleString()}</span>
-              <span className="text-lg font-bold text-white">
-                ₹{summary.budgetRemaining?.toLocaleString()} Left
-              </span>
+          {summary.budgetLimit > 0 ? (
+            <div className="my-6">
+              <div className="flex justify-between items-baseline mb-2">
+                <span className="text-xs text-gray-400">Used: ₹{summary.budgetSpent?.toLocaleString()}</span>
+                <span className="text-lg font-bold text-white">
+                  ₹{summary.budgetRemaining?.toLocaleString()} Left
+                </span>
+              </div>
+              <div className="w-full h-3 bg-slate-800 rounded-full overflow-hidden">
+                <div 
+                  className={`h-full transition-all duration-500 ${
+                    budgetProgress >= 100 ? 'bg-rose-500' : budgetProgress >= 80 ? 'bg-amber-500' : 'bg-gradient-to-r from-brand-indigo to-brand-purple'
+                  }`}
+                  style={{ width: `${budgetProgress}%` }}
+                />
+              </div>
+              <div className="flex justify-between mt-2">
+                <span className="text-[10px] text-gray-500">Limit: ₹{summary.budgetLimit?.toLocaleString()}</span>
+                <span className="text-[10px] text-gray-500">{budgetProgress.toFixed(0)}% Used</span>
+              </div>
             </div>
-            <div className="w-full h-3 bg-slate-800 rounded-full overflow-hidden">
-              <div 
-                className={`h-full transition-all duration-500 ${
-                  budgetProgress >= 100 ? 'bg-rose-500' : budgetProgress >= 80 ? 'bg-amber-500' : 'bg-gradient-to-r from-brand-indigo to-brand-purple'
-                }`}
-                style={{ width: `${budgetProgress}%` }}
-              />
+          ) : (
+            <div className="my-6 py-4 flex flex-col items-center text-center justify-center border border-dashed border-white/10 rounded-2xl bg-slate-900/25">
+              <AlertTriangle className="h-5 w-5 text-gray-500 mb-2 animate-pulse" />
+              <p className="text-xs text-gray-400 font-medium px-4">
+                No monthly budget limit set yet. Create a limit to track your spending allowance.
+              </p>
             </div>
-            <div className="flex justify-between mt-2">
-              <span className="text-[10px] text-gray-500">Limit: ₹{summary.budgetLimit?.toLocaleString()}</span>
-              <span className="text-[10px] text-gray-500">{budgetProgress.toFixed(0)}% Used</span>
-            </div>
-          </div>
+          )}
 
-          {budgetProgress >= 90 && (
+          {summary.budgetLimit > 0 && budgetProgress >= 90 && (
             <div className="bg-rose-500/10 border border-rose-500/20 p-3 rounded-xl flex items-start gap-2">
               <AlertTriangle className="h-4 w-4 text-rose-400 shrink-0 mt-0.5" />
               <p className="text-[10px] text-rose-400 leading-normal">
@@ -490,7 +499,7 @@ export default function Dashboard({ refresh }) {
           )}
           
           <button 
-            onClick={() => navigate('/transactions')} 
+            onClick={() => navigate('/transactions?tab=budgets')} 
             className="text-xs font-bold text-brand-purple flex items-center gap-1 hover:underline mt-auto pt-4"
           >
             Manage budgets and limits <ArrowRight className="h-3 w-3" />
