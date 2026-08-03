@@ -127,7 +127,7 @@ export default function App() {
     }
   }, [isAuthenticated, token]);
 
-  const { user } = useSelector((state) => state.auth);
+  const { user, adminViewMode } = useSelector((state) => state.auth);
 
   return (
     <Routes>
@@ -136,7 +136,7 @@ export default function App() {
       
       <Route path="/" element={
         <PrivateRoute>
-          {user?.role === 'admin' ? <AdminDashboard /> : <Layout />}
+          {user?.role === 'admin' && adminViewMode === 'admin' ? <AdminDashboard /> : <Layout />}
         </PrivateRoute>
       }>
         <Route index element={<Dashboard refresh={fetchUserData} />} />

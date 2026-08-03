@@ -22,7 +22,7 @@ import {
   Sun,
   Moon
 } from 'lucide-react';
-import { logout, updateLocalSettings } from '../store/authSlice.js';
+import { logout, updateLocalSettings, setAdminViewMode } from '../store/authSlice.js';
 import axios from 'axios';
 
 export default function Layout() {
@@ -116,18 +116,14 @@ export default function Layout() {
               );
             })}
             
-            {showAdmin && (
-              <Link
-                to="/admin"
-                className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all ${
-                  location.pathname === '/admin'
-                    ? 'bg-red-500/10 text-red-400 border border-red-500/20'
-                    : 'text-gray-400 hover:bg-red-950/20 hover:text-red-400 border border-transparent'
-                }`}
+            {user?.role === 'admin' && (
+              <button
+                onClick={() => dispatch(setAdminViewMode('admin'))}
+                className="flex items-center gap-3 w-full text-left px-4 py-3 rounded-xl text-sm font-medium text-red-400 hover:bg-red-500/10 transition-all border border-red-500/20 mt-2"
               >
                 <Shield className="h-4.5 w-4.5 text-red-500" />
-                Admin Panel
-              </Link>
+                Admin Console
+              </button>
             )}
           </nav>
         </div>
@@ -211,14 +207,16 @@ export default function Layout() {
                     );
                   })}
                   {showAdmin && (
-                    <Link
-                      to="/admin"
-                      onClick={() => setIsMobileOpen(false)}
-                      className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-red-400 hover:bg-red-950/20"
+                    <button
+                      onClick={() => {
+                        setIsMobileOpen(false);
+                        dispatch(setAdminViewMode('admin'));
+                      }}
+                      className="flex items-center gap-3 w-full text-left px-4 py-3 rounded-xl text-sm font-medium text-red-400 hover:bg-red-500/10 transition-all border border-red-500/20 mt-2"
                     >
                       <Shield className="h-4.5 w-4.5 text-red-500" />
-                      Admin Panel
-                    </Link>
+                      Admin Console
+                    </button>
                   )}
                 </nav>
               </div>

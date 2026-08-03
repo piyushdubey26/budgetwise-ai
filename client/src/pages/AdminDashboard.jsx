@@ -40,7 +40,7 @@ import {
   Legend
 } from 'recharts';
 import axios from 'axios';
-import { logout, updateLocalSettings } from '../store/authSlice.js';
+import { logout, updateLocalSettings, setAdminViewMode } from '../store/authSlice.js';
 
 export default function AdminDashboard() {
   const dispatch = useDispatch();
@@ -289,14 +289,22 @@ export default function AdminDashboard() {
         {/* Admin profile Summary at Bottom */}
         <div className="border-t border-white/5 pt-4">
           <div className="flex items-center gap-3 px-2 mb-4">
-            <div className="h-10 w-10 rounded-full bg-gradient-to-tr from-brand-indigo to-brand-purple flex items-center justify-center font-bold text-white shadow-inner">
-              A
+            <div className="h-10 w-10 rounded-full bg-gradient-to-tr from-brand-indigo to-brand-purple flex items-center justify-center font-bold text-white shadow-inner uppercase">
+              {user?.name?.charAt(0) || 'A'}
             </div>
             <div>
-              <span className="text-sm font-semibold text-white block">System Administrator</span>
-              <span className="text-[10px] text-gray-500 block">admin@budgetwise.com</span>
+              <span className="text-sm font-semibold text-white block truncate max-w-[150px]">{user?.name || 'System Admin'}</span>
+              <span className="text-[10px] text-gray-500 block truncate max-w-[150px]">{user?.email || 'admin@budgetwise.com'}</span>
             </div>
           </div>
+
+          <button
+            onClick={() => dispatch(setAdminViewMode('personal'))}
+            className="flex items-center gap-3 w-full px-4 py-3 mb-2 rounded-xl text-sm font-medium text-brand-indigo hover:bg-brand-indigo/10 transition-all border border-brand-indigo/20"
+          >
+            <Coins className="h-4.5 w-4.5 text-brand-indigo" />
+            Personal Tracker
+          </button>
 
           <button
             onClick={handleLogout}

@@ -6,6 +6,7 @@ const user = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('use
 const initialState = {
   token,
   user,
+  adminViewMode: user?.role === 'admin' ? 'admin' : 'personal',
   settings: {
     currency: 'INR',
     theme: 'dark',
@@ -31,6 +32,7 @@ const authSlice = createSlice({
       state.token = action.payload.token;
       state.user = action.payload.user;
       state.isAuthenticated = true;
+      state.adminViewMode = action.payload.user?.role === 'admin' ? 'admin' : 'personal';
       localStorage.setItem('token', action.payload.token);
       localStorage.setItem('user', JSON.stringify(action.payload.user));
     },
@@ -42,12 +44,16 @@ const authSlice = createSlice({
       state.token = null;
       state.user = null;
       state.isAuthenticated = false;
+      state.adminViewMode = 'personal';
       localStorage.removeItem('token');
       localStorage.removeItem('user');
     },
     loadProfile: (state, action) => {
       state.user = action.payload.user;
       state.settings = action.payload.settings;
+      if (!state.adminViewMode) {
+        state.adminViewMode = action.payload.user?.role === 'admin' ? 'admin' : 'personal';
+      }
       localStorage.setItem('user', JSON.stringify(action.payload.user));
     },
     updateLocalSettings: (state, action) => {
@@ -67,6 +73,9 @@ const authSlice = createSlice({
         state.user.level = Math.floor(state.user.xp / 100) + 1;
         localStorage.setItem('user', JSON.stringify(state.user));
       }
+    },
+    setAdminViewMode: (state, action) => {
+      state.adminViewMode = action.payload;
     }
   }
 });
@@ -79,7 +88,8 @@ export const {
   loadProfile,
   updateLocalSettings,
   upgradePremiumSuccess,
-  addCoinsXP
+  addCoinsXP,
+  setAdminViewMode
 } = authSlice.actions;
 
 export default authSlice.reducer;
