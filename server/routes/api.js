@@ -41,6 +41,8 @@ router.post('/auth/upgrade', auth, authCtrl.upgradeToPremium);
 // ==========================================
 router.get('/wallets', auth, finCtrl.getWallets);
 router.post('/wallets', auth, finCtrl.createWallet);
+router.put('/wallets/:id', auth, finCtrl.updateWallet);
+router.delete('/wallets/:id', auth, finCtrl.deleteWallet);
 
 // ==========================================
 // TRANSACTION ROUTES

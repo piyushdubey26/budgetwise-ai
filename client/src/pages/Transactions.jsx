@@ -114,6 +114,42 @@ export default function Transactions({ refresh }) {
     }
   };
 
+  const [editingWalletId, setEditingWalletId] = useState(null);
+  const [walletEditForm, setWalletEditForm] = useState({ name: '', type: 'cash', balance: '' });
+
+  const startEditWallet = (w) => {
+    setEditingWalletId(w._id);
+    setWalletEditForm({ name: w.name, type: w.type, balance: w.balance.toString() });
+  };
+
+  const handleUpdateWallet = async (walletId) => {
+    try {
+      if (!walletEditForm.name || walletEditForm.balance === '') {
+        alert('Wallet name and balance are required.');
+        return;
+      }
+      await axios.put(`/api/wallets/${walletId}`, {
+        name: walletEditForm.name,
+        type: walletEditForm.type,
+        balance: parseFloat(walletEditForm.balance)
+      });
+      setEditingWalletId(null);
+      if (refresh) refresh();
+    } catch (err) {
+      alert('Failed to update wallet: ' + (err.response?.data?.message || err.message));
+    }
+  };
+
+  const handleDeleteWallet = async (walletId) => {
+    if (!confirm('Are you sure you want to delete this wallet? This will not affect existing transactions, but they will still reference this wallet name.')) return;
+    try {
+      await axios.delete(`/api/wallets/${walletId}`);
+      if (refresh) refresh();
+    } catch (err) {
+      alert('Failed to delete wallet: ' + (err.response?.data?.message || err.message));
+    }
+  };
+
   const handleAddTx = async (e) => {
     e.preventDefault();
     try {
@@ -525,16 +561,92 @@ export default function Transactions({ refresh }) {
           <div className="lg:col-span-2 space-y-4">
             <h3 className="text-base font-bold text-white">Your Wallets</h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {wallets.map(w => (
-                <div key={w._id} className="glass-panel p-6 rounded-2xl flex items-center justify-between border-l-4 border-brand-purple">
-                  <div>
-                    <span className="text-sm font-bold text-white block">{w.name}</span>
-                    <span className="text-[10px] text-gray-400 uppercase tracking-wider">{w.type}</span>
+               {wallets.map(w => (
+                editingWalletId === w._id ? (
+                  <div key={w._id} className="glass-panel p-5 rounded-2xl border-l-4 border-amber-500 space-y-4">
+                    <div className="space-y-3">
+                      <div>
+                        <label className="text-[9px] font-bold text-gray-500 uppercase block mb-1">Wallet Name</label>
+                        <input 
+                          type="text" 
+                          value={walletEditForm.name}
+                          onChange={e => setWalletEditForm({ ...walletEditForm, name: e.target.value })}
+                          className="w-full bg-slate-950 border border-white/10 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none"
+                        />
+                      </div>
+                      
+                      <div className="grid grid-cols-2 gap-2">
+                        <div>
+                          <label className="text-[9px] font-bold text-gray-500 uppercase block mb-1">Type</label>
+                          <select 
+                            value={walletEditForm.type}
+                            onChange={e => setWalletEditForm({ ...walletEditForm, type: e.target.value })}
+                            className="w-full bg-slate-950 border border-white/10 rounded-lg px-2 py-1.5 text-xs text-white focus:outline-none cursor-pointer"
+                          >
+                            <option value="cash">Cash</option>
+                            <option value="bank">Bank</option>
+                            <option value="credit_card">Credit Card</option>
+                            <option value="e_wallet">E-Wallet</option>
+                          </select>
+                        </div>
+                        <div>
+                          <label className="text-[9px] font-bold text-gray-500 uppercase block mb-1">Balance (₹)</label>
+                          <input 
+                            type="number" 
+                            value={walletEditForm.balance}
+                            onChange={e => setWalletEditForm({ ...walletEditForm, balance: e.target.value })}
+                            className="w-full bg-slate-950 border border-white/10 rounded-lg px-2 py-1.5 text-xs text-white focus:outline-none"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex gap-2 justify-end pt-2 border-t border-white/5">
+                      <button 
+                        onClick={() => setEditingWalletId(null)}
+                        className="p-1 px-2.5 rounded-lg border border-white/10 text-gray-400 hover:bg-white/5 text-[10px] font-bold flex items-center gap-1 transition-all"
+                      >
+                        <X className="h-3 w-3" /> Cancel
+                      </button>
+                      <button 
+                        onClick={() => handleUpdateWallet(w._id)}
+                        className="p-1 px-3 bg-brand-purple text-white hover:brightness-110 rounded-lg text-[10px] font-bold flex items-center gap-1 transition-all"
+                      >
+                        <Check className="h-3 w-3" /> Save
+                      </button>
+                    </div>
                   </div>
-                  <span className={`text-lg font-extrabold ${w.balance < 0 ? 'text-rose-400' : 'text-emerald-400'}`}>
-                    ₹{w.balance.toLocaleString()}
-                  </span>
-                </div>
+                ) : (
+                  <div key={w._id} className="glass-panel p-6 rounded-2xl flex items-center justify-between border-l-4 border-brand-purple group relative overflow-hidden transition-all hover:bg-slate-900/10">
+                    <div>
+                      <span className="text-sm font-bold text-white block">{w.name}</span>
+                      <span className="text-[10px] text-gray-400 uppercase tracking-wider">{w.type}</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <span className={`text-lg font-extrabold ${w.balance < 0 ? 'text-rose-400' : 'text-emerald-400'}`}>
+                        ₹{w.balance.toLocaleString()}
+                      </span>
+
+                      {/* Hover actions */}
+                      <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity pl-2 border-l border-white/5 bg-slate-950/40 p-1 rounded-lg backdrop-blur-sm">
+                        <button 
+                          onClick={() => startEditWallet(w)}
+                          className="p-1.5 text-brand-purple hover:bg-brand-purple/10 rounded-md transition-all"
+                          title="Edit Wallet"
+                        >
+                          <Edit className="h-3.5 w-3.5" />
+                        </button>
+                        <button 
+                          onClick={() => handleDeleteWallet(w._id)}
+                          className="p-1.5 text-rose-400 hover:bg-rose-500/15 rounded-md transition-all"
+                          title="Delete Wallet"
+                        >
+                          <Trash2 className="h-3.5 w-3.5" />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )
               ))}
             </div>
           </div>

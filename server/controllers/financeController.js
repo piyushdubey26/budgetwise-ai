@@ -71,6 +71,39 @@ export const createWallet = async (req, res) => {
   }
 };
 
+export const updateWallet = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name, type, balance } = req.body;
+    
+    const wallet = await Wallet.findOne({ _id: id, userId: req.user.id });
+    if (!wallet) return res.status(404).json({ message: 'Wallet not found.' });
+
+    let updateData = {};
+    if (name !== undefined) updateData.name = name;
+    if (type !== undefined) updateData.type = type;
+    if (balance !== undefined) updateData.balance = parseFloat(balance);
+
+    const updated = await Wallet.findByIdAndUpdate(id, updateData);
+    res.status(200).json(updated);
+  } catch (err) {
+    res.status(500).json({ message: 'Error updating wallet.', error: err.message });
+  }
+};
+
+export const deleteWallet = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const wallet = await Wallet.findOne({ _id: id, userId: req.user.id });
+    if (!wallet) return res.status(404).json({ message: 'Wallet not found.' });
+
+    await Wallet.findByIdAndDelete(id);
+    res.status(200).json({ message: 'Wallet deleted successfully.' });
+  } catch (err) {
+    res.status(500).json({ message: 'Error deleting wallet.', error: err.message });
+  }
+};
+
 // ==========================================
 // TRANSACTION CONTROLLERS & BUDGET LOGIC
 // ==========================================
