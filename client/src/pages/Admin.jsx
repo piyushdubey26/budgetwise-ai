@@ -45,7 +45,7 @@ export default function Admin() {
       
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-red-500 via-rose-400 to-white bg-clip-text text-transparent flex items-center gap-2">
+        <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-red-500 via-rose-400 to-slate-900 dark:to-white bg-clip-text text-transparent flex items-center gap-2">
           Admin Control Center
         </h1>
         <p className="text-gray-400 text-sm mt-1">
