@@ -46,7 +46,7 @@ export default function AiAdvisor() {
       {/* Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-slate-900 via-slate-800 to-brand-indigo dark:from-white dark:via-slate-100 dark:to-brand-indigo bg-clip-text text-transparent flex items-center gap-2">
+          <h1 className="page-title flex items-center gap-2">
             <Sparkles className="h-7 w-7 text-brand-purple animate-pulse" />
             AI Financial Advisor
           </h1>

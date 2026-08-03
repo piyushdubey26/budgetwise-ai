@@ -41,6 +41,47 @@
   }
 }
 
+
+.page-title {
+  font-family: var(--font-display);
+  font-size: 1.875rem;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+}
+
+html.dark .page-title {
+  background-image: linear-gradient(to right, #ffffff, #e2e8f0, #4f46e5);
+}
+
+html.light .page-title {
+  background-image: linear-gradient(to right, #0f172a, #334155, #4f46e5);
+}
+
+.admin-page-title {
+  font-family: var(--font-display);
+  font-size: 1.875rem;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+}
+
+html.dark .admin-page-title {
+  background-image: linear-gradient(to right, #ef4444, #fb7185, #ffffff);
+}
+
+html.light .admin-page-title {
+  background-image: linear-gradient(to right, #ef4444, #fb7185, #0f172a);
+}
+
 body {
   font-family: var(--font-sans);
   overflow-x: hidden;
