@@ -237,11 +237,71 @@ html.light .bg-slate-950\/60 {
 /* Heatmap squares styling */
 .heatmap-cell {
   aspect-ratio: 1;
-  border-radius: 2px;
+  border-radius: 8px;
   transition: transform 0.1s ease, filter 0.1s ease;
+  padding: 0.625rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  cursor: pointer;
 }
 .heatmap-cell:hover {
-  transform: scale(1.15);
-  filter: brightness(1.2);
+  transform: scale(1.1);
+  filter: brightness(1.05);
   z-index: 10;
+  box-shadow: 0 4px 12px rgba(244, 63, 94, 0.15);
+}
+
+/* Light Mode Heatmap Colors (Baby Pink Theme) */
+html.light .heatmap-empty {
+  background-color: #fff1f2 !important;
+  border: 1px solid rgba(244, 63, 94, 0.06) !important;
+  color: #fda4af !important;
+}
+html.light .heatmap-low {
+  background-color: #ffe4e6 !important;
+  border: 1px solid #fecdd3 !important;
+  color: #e11d48 !important;
+}
+html.light .heatmap-med {
+  background-color: #fecdd3 !important;
+  border: 1px solid #fda4af !important;
+  color: #be123c !important;
+}
+html.light .heatmap-high {
+  background-color: #fb7185 !important;
+  border: 1px solid #f43f5e !important;
+  color: #ffffff !important;
+}
+html.light .heatmap-max {
+  background-color: #e11d48 !important;
+  border: 1px solid #be123c !important;
+  color: #ffffff !important;
+}
+
+/* Dark Mode Heatmap Colors (Baby Pink Theme) */
+html.dark .heatmap-empty {
+  background-color: rgba(15, 23, 42, 0.6) !important;
+  border: 1px solid rgba(255, 255, 255, 0.05) !important;
+  color: #475569 !important;
+}
+html.dark .heatmap-low {
+  background-color: rgba(244, 63, 94, 0.12) !important;
+  border: 1px solid rgba(244, 63, 94, 0.22) !important;
+  color: #fda4af !important;
+}
+html.dark .heatmap-med {
+  background-color: rgba(244, 63, 94, 0.3) !important;
+  border: 1px solid rgba(244, 63, 94, 0.4) !important;
+  color: #ffe4e6 !important;
+}
+html.dark .heatmap-high {
+  background-color: #f43f5e !important;
+  border: 1px solid #e11d48 !important;
+  color: #ffffff !important;
+}
+html.dark .heatmap-max {
+  background-color: #be123c !important;
+  border: 1px solid #9f1239 !important;
+  color: #ffffff !important;
 }

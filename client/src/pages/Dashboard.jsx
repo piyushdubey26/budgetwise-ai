@@ -187,31 +187,11 @@ export default function Dashboard({ refresh }) {
 
   // Get intensity color for Heatmap
   const getHeatmapColor = (cost) => {
-    if (cost === 0) return {
-      bg: 'bg-slate-100 dark:bg-slate-900/60 border border-slate-200/60 dark:border-white/5',
-      text: 'text-slate-400 dark:text-slate-500',
-      costText: 'text-transparent'
-    };
-    if (cost < 500) return {
-      bg: 'bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-500/20',
-      text: 'text-indigo-500 dark:text-indigo-400',
-      costText: 'text-indigo-600 dark:text-indigo-300'
-    };
-    if (cost < 2000) return {
-      bg: 'bg-indigo-100 dark:bg-indigo-900/60 border border-indigo-300 dark:border-indigo-500/30',
-      text: 'text-indigo-600 dark:text-indigo-300',
-      costText: 'text-indigo-700 dark:text-indigo-200 font-semibold'
-    };
-    if (cost < 5000) return {
-      bg: 'bg-indigo-600 border border-indigo-700',
-      text: 'text-indigo-200',
-      costText: 'text-white font-bold'
-    };
-    return {
-      bg: 'bg-purple-600 border border-purple-700 shadow-sm',
-      text: 'text-purple-200',
-      costText: 'text-white font-bold'
-    };
+    if (cost === 0) return 'heatmap-empty';
+    if (cost < 500) return 'heatmap-low';
+    if (cost < 2000) return 'heatmap-med';
+    if (cost < 5000) return 'heatmap-high';
+    return 'heatmap-max';
   };
 
   const budgetProgress = summary.budgetLimit > 0 
@@ -457,25 +437,27 @@ export default function Dashboard({ refresh }) {
               <p className="text-gray-400 text-xs mt-0.5">Last 28 days spending heatmap</p>
             </div>
             <div className="flex gap-2">
-              <span className="text-[9px] text-gray-500 flex items-center gap-1">Less <span className="h-2 w-2 rounded-sm bg-slate-900" /></span>
-              <span className="text-[9px] text-gray-500 flex items-center gap-1"><span className="h-2 w-2 rounded-sm bg-indigo-600" /> More</span>
+              <span className="text-[9px] text-gray-500 flex items-center gap-1">Less <span className="h-2 w-2 rounded-sm bg-rose-100 dark:bg-slate-900" /></span>
+              <span className="text-[9px] text-gray-500 flex items-center gap-1"><span className="h-2 w-2 rounded-sm bg-rose-500" /> More</span>
             </div>
           </div>
           
           <div className="grid grid-cols-7 gap-3 py-2">
             {heatmapDays.map((day, i) => {
-              const themeStyle = getHeatmapColor(day.cost);
+              const cellClass = getHeatmapColor(day.cost);
               return (
                 <div 
                   key={i} 
                   title={`${day.date}: ₹${day.cost.toLocaleString()}`}
                   onClick={() => setSelectedDate(day.date)}
-                  className={`heatmap-cell p-2.5 flex flex-col justify-between rounded-lg cursor-pointer ${themeStyle.bg}`}
+                  className={`heatmap-cell ${cellClass}`}
                 >
-                  <span className={`text-[10px] font-bold block ${themeStyle.text}`}>{day.dayNum}</span>
-                  <span className={`text-[8px] font-extrabold block truncate mt-1 ${themeStyle.costText}`}>
-                    ₹{day.cost > 1000 ? `${(day.cost/1000).toFixed(1)}k` : Math.round(day.cost)}
-                  </span>
+                  <span className="text-[10px] font-bold block">{day.dayNum}</span>
+                  {day.cost > 0 && (
+                    <span className="text-[8px] font-extrabold block truncate mt-1">
+                      ₹{day.cost > 1000 ? `${(day.cost/1000).toFixed(1)}k` : Math.round(day.cost)}
+                    </span>
+                  )}
                 </div>
               );
             })}
