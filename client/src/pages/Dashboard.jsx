@@ -641,12 +641,14 @@ export default function Dashboard({ refresh }) {
 
             {/* Modal Footer */}
             <div className="p-6 bg-slate-950/20 border-t border-white/5 flex justify-end">
-              <button 
-                onClick={() => setSelectedDate(null)}
-                className="bg-gradient-to-r from-brand-indigo to-brand-purple hover:brightness-110 px-5 py-2 rounded-xl font-semibold text-sm text-white shadow shadow-brand-indigo/10 transition-all"
+              <Link 
+                to="/transactions"
+                state={{ prefillDate: selectedDate }}
+                className="flex items-center gap-2 bg-gradient-to-r from-brand-indigo to-brand-purple hover:brightness-110 px-5 py-2.5 rounded-xl font-semibold text-sm text-white shadow-lg shadow-brand-indigo/15 transition-all"
               >
-                Close Window
-              </button>
+                <Plus className="h-4 w-4" />
+                Add Transaction
+              </Link>
             </div>
           </div>
         </div>

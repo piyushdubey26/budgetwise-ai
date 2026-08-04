@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
@@ -28,6 +28,7 @@ const CATEGORIES = [
 
 export default function Transactions({ refresh }) {
   const [searchParams] = useSearchParams();
+  const location = useLocation();
   const { transactions, wallets, budgets } = useSelector(state => state.finance);
   const { user } = useSelector(state => state.auth);
   
@@ -39,6 +40,18 @@ export default function Transactions({ refresh }) {
       setActiveTab(tab);
     }
   }, [searchParams]);
+
+  useEffect(() => {
+    if (location.state && location.state.prefillDate) {
+      setTxForm(prev => ({
+        ...prev,
+        date: location.state.prefillDate
+      }));
+      setShowAddTx(true);
+      setActiveTab('list');
+    }
+  }, [location.state]);
+
   const [search, setSearch] = useState('');
   const [typeFilter, setTypeFilter] = useState('');
   const [catFilter, setCatFilter] = useState('');
