@@ -173,8 +173,12 @@ export function defineModel(name, schemaDef) {
   const getMongooseModel = () => {
     if (!mongooseModel && isMongoConnected) {
       // Define schema using mongoose, forcing _id to be String type to match local JSON DB keys
+      // and providing a default stringified ObjectId generator for newly created documents
       const schema = new mongoose.Schema({
-        _id: { type: String },
+        _id: { 
+          type: String, 
+          default: () => new mongoose.Types.ObjectId().toString() 
+        },
         ...schemaDef
       }, { timestamps: true });
       mongooseModel = mongoose.model(name, schema);
