@@ -24,7 +24,7 @@ export default function AiAdvisor() {
       const res = await axios.get('/api/ai/advisor');
       setAdvisorData(res.data);
     } catch (e) {
-      alert('Failed to generate AI insights');
+      alert('Failed to generate AI insights: ' + (e.response?.data?.message || e.message));
     } finally {
       setLoading(false);
     }
