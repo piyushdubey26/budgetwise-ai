@@ -138,7 +138,9 @@ export default function Dashboard({ refresh }) {
     // Initialise last 4 months
     for (let i = 3; i >= 0; i--) {
       const d = new Date(today.getFullYear(), today.getMonth() - i, 1);
-      const key = d.toISOString().substring(0, 7); // YYYY-MM
+      const year = d.getFullYear();
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      const key = `${year}-${month}`;
       months[key] = {
         name: d.toLocaleString('default', { month: 'short' }),
         Income: 0,
