@@ -179,7 +179,7 @@ export const broadcastNotification = async (req, res) => {
       return res.status(400).json({ message: 'Title and message are required.' });
     }
 
-    const allUsers = await User.find({ role: 'user' });
+    const allUsers = await User.find({});
     
     // Create notifications for all users
     for (const u of allUsers) {
