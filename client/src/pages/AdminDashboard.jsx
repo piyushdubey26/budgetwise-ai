@@ -272,7 +272,7 @@ export default function AdminDashboard() {
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center gap-3 w-full text-left px-4 py-3 rounded-xl text-sm font-medium transition-all ${
+                  className={`flex items-center gap-3 w-full text-left px-4 py-3 rounded-xl text-sm font-medium transition-all cursor-pointer ${
                     isActive
                       ? 'bg-brand-indigo/10 text-brand-indigo border border-brand-indigo/20'
                       : 'text-gray-400 hover:bg-slate-900/50 hover:text-white border border-transparent'
@@ -300,7 +300,7 @@ export default function AdminDashboard() {
 
           <button
             onClick={() => dispatch(setAdminViewMode('personal'))}
-            className="flex items-center gap-3 w-full px-4 py-3 mb-2 rounded-xl text-sm font-medium text-brand-indigo hover:bg-brand-indigo/10 transition-all border border-brand-indigo/20"
+            className="flex items-center gap-3 w-full px-4 py-3 mb-2 rounded-xl text-sm font-medium text-brand-indigo hover:bg-brand-indigo/10 transition-all border border-brand-indigo/20 cursor-pointer"
           >
             <Coins className="h-4.5 w-4.5 text-brand-indigo" />
             Personal Tracker
@@ -308,7 +308,7 @@ export default function AdminDashboard() {
 
           <button
             onClick={handleLogout}
-            className="flex items-center gap-3 w-full px-4 py-3 rounded-xl text-sm font-medium text-rose-400 hover:bg-rose-500/10 transition-all"
+            className="flex items-center gap-3 w-full px-4 py-3 rounded-xl text-sm font-medium text-rose-400 hover:bg-rose-500/10 transition-all cursor-pointer"
           >
             <LogOut className="h-4.5 w-4.5" />
             Logout
@@ -327,7 +327,7 @@ export default function AdminDashboard() {
             {/* Theme Toggle Button */}
             <button
               onClick={toggleTheme}
-              className="p-2 rounded-xl text-gray-400 hover:bg-slate-900/50 hover:text-white dark:hover:bg-slate-900 hover:bg-slate-200 transition-all"
+              className="p-2 rounded-xl text-gray-400 hover:bg-slate-900/50 hover:text-white dark:hover:bg-slate-900 hover:bg-slate-200 transition-all cursor-pointer"
               title="Toggle Theme"
             >
               {(settings?.theme || 'dark') === 'dark' ? (
@@ -704,7 +704,7 @@ export default function AdminDashboard() {
 
                   <button 
                     type="submit"
-                    className="w-full py-2.5 bg-gradient-to-r from-brand-indigo to-brand-purple hover:brightness-110 text-white font-extrabold text-xs rounded-xl shadow-lg transition-all"
+                    className="w-full py-2.5 bg-gradient-to-r from-brand-indigo to-brand-purple hover:brightness-110 text-white font-extrabold text-xs rounded-xl shadow-lg transition-all cursor-pointer"
                   >
                     Broadcast to All User Inboxes
                   </button>
