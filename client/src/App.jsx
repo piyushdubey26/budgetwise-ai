@@ -49,6 +49,23 @@ export default function App() {
     delete axios.defaults.headers.common['Authorization'];
   }
 
+  // Set up global axios interceptor for 401 Unauthorized errors (expired/invalid tokens)
+  useEffect(() => {
+    const interceptor = axios.interceptors.response.use(
+      (response) => response,
+      (error) => {
+        if (error.response?.status === 401) {
+          dispatch(logout());
+          navigate('/login');
+        }
+        return Promise.reject(error);
+      }
+    );
+    return () => {
+      axios.interceptors.response.eject(interceptor);
+    };
+  }, [dispatch, navigate]);
+
   const fetchUserData = async () => {
     try {
       // 1. Fetch Profile & Settings
