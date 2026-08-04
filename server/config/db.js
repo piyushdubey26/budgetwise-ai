@@ -172,8 +172,11 @@ export function defineModel(name, schemaDef) {
   let mongooseModel = null;
   const getMongooseModel = () => {
     if (!mongooseModel && isMongoConnected) {
-      // Define schema using mongoose
-      const schema = new mongoose.Schema(schemaDef, { timestamps: true });
+      // Define schema using mongoose, forcing _id to be String type to match local JSON DB keys
+      const schema = new mongoose.Schema({
+        _id: { type: String },
+        ...schemaDef
+      }, { timestamps: true });
       mongooseModel = mongoose.model(name, schema);
     }
     return mongooseModel;
