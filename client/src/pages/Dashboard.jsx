@@ -25,6 +25,8 @@ import {
   AlertTriangle,
   ArrowRight,
   Plus,
+  Minus,
+  X,
   Compass,
   Wallet,
   Edit3
@@ -52,6 +54,7 @@ export default function Dashboard({ refresh }) {
   const { user, settings } = useSelector((state) => state.auth);
   const { summary, transactions, wallets, goals, budgets } = useSelector((state) => state.finance);
   const [heatmapDays, setHeatmapDays] = useState([]);
+  const [selectedDate, setSelectedDate] = useState(null);
 
   const [isEditingNetWorth, setIsEditingNetWorth] = useState(false);
   const [customNetWorth, setCustomNetWorth] = useState('');
@@ -101,7 +104,10 @@ export default function Dashboard({ refresh }) {
     for (let i = 27; i >= 0; i--) {
       const d = new Date(today);
       d.setDate(today.getDate() - i);
-      const dateStr = d.toISOString().split('T')[0];
+      const year = d.getFullYear();
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      const dateStr = `${year}-${month}-${day}`;
       const cost = expenseMap[dateStr] || 0;
       days.push({
         date: dateStr,
@@ -181,11 +187,31 @@ export default function Dashboard({ refresh }) {
 
   // Get intensity color for Heatmap
   const getHeatmapColor = (cost) => {
-    if (cost === 0) return 'bg-slate-900 border border-white/5';
-    if (cost < 500) return 'bg-indigo-950/60 border border-indigo-800/20';
-    if (cost < 2000) return 'bg-indigo-800/80';
-    if (cost < 5000) return 'bg-indigo-600';
-    return 'bg-purple-500 shadow-md shadow-purple-500/25';
+    if (cost === 0) return {
+      bg: 'bg-slate-100 dark:bg-slate-900/60 border border-slate-200/60 dark:border-white/5',
+      text: 'text-slate-400 dark:text-slate-500',
+      costText: 'text-transparent'
+    };
+    if (cost < 500) return {
+      bg: 'bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-500/20',
+      text: 'text-indigo-500 dark:text-indigo-400',
+      costText: 'text-indigo-600 dark:text-indigo-300'
+    };
+    if (cost < 2000) return {
+      bg: 'bg-indigo-100 dark:bg-indigo-900/60 border border-indigo-300 dark:border-indigo-500/30',
+      text: 'text-indigo-600 dark:text-indigo-300',
+      costText: 'text-indigo-700 dark:text-indigo-200 font-semibold'
+    };
+    if (cost < 5000) return {
+      bg: 'bg-indigo-600 border border-indigo-700',
+      text: 'text-indigo-200',
+      costText: 'text-white font-bold'
+    };
+    return {
+      bg: 'bg-purple-600 border border-purple-700 shadow-sm',
+      text: 'text-purple-200',
+      costText: 'text-white font-bold'
+    };
   };
 
   const budgetProgress = summary.budgetLimit > 0 
@@ -437,20 +463,22 @@ export default function Dashboard({ refresh }) {
           </div>
           
           <div className="grid grid-cols-7 gap-3 py-2">
-            {heatmapDays.map((day, i) => (
-              <div 
-                key={i} 
-                title={`${day.date}: ₹${day.cost.toLocaleString()}`}
-                className={`heatmap-cell p-2.5 flex flex-col justify-between rounded-lg cursor-pointer ${getHeatmapColor(day.cost)}`}
-              >
-                <span className="text-[10px] text-gray-500 font-bold block">{day.dayNum}</span>
-                {day.cost > 0 && (
-                  <span className="text-[8px] text-white font-extrabold block truncate mt-1">
+            {heatmapDays.map((day, i) => {
+              const themeStyle = getHeatmapColor(day.cost);
+              return (
+                <div 
+                  key={i} 
+                  title={`${day.date}: ₹${day.cost.toLocaleString()}`}
+                  onClick={() => setSelectedDate(day.date)}
+                  className={`heatmap-cell p-2.5 flex flex-col justify-between rounded-lg cursor-pointer ${themeStyle.bg}`}
+                >
+                  <span className={`text-[10px] font-bold block ${themeStyle.text}`}>{day.dayNum}</span>
+                  <span className={`text-[8px] font-extrabold block truncate mt-1 ${themeStyle.costText}`}>
                     ₹{day.cost > 1000 ? `${(day.cost/1000).toFixed(1)}k` : Math.round(day.cost)}
                   </span>
-                )}
-              </div>
-            ))}
+                </div>
+              );
+            })}
           </div>
         </div>
 
@@ -570,6 +598,77 @@ export default function Dashboard({ refresh }) {
         </div>
 
       </div>
+
+      {/* Detailed Day Transactions Modal */}
+      {selectedDate && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <div className="glass-panel w-full max-w-xl rounded-3xl overflow-hidden shadow-2xl border border-white/10 animate-in fade-in zoom-in-95 duration-150 text-left">
+            {/* Modal Header */}
+            <div className="flex justify-between items-center p-6 border-b border-white/5">
+              <div>
+                <h3 className="text-lg font-bold text-white">Transactions for {new Date(selectedDate).toLocaleDateString('default', { day: 'numeric', month: 'short', year: 'numeric' })}</h3>
+                <p className="text-gray-400 text-xs mt-0.5">Total spent: ₹{heatmapDays.find(d => d.date === selectedDate)?.cost.toLocaleString() || 0}</p>
+              </div>
+              <button 
+                onClick={() => setSelectedDate(null)}
+                className="p-1.5 rounded-xl bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white transition-all"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            {/* Modal Body */}
+            <div className="p-6 max-h-[50vh] overflow-y-auto space-y-3 scrollbar-none">
+              {transactions.filter(t => t.date === selectedDate).length > 0 ? (
+                transactions.filter(t => t.date === selectedDate).map((t) => (
+                  <div 
+                    key={t._id} 
+                    className={`flex justify-between items-center p-4 rounded-2xl ${
+                      t.type === 'income' ? 'bg-emerald-500/5 border border-emerald-500/10' : 'bg-slate-900/30 border border-white/5'
+                    }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className={`p-2 rounded-xl ${
+                        t.type === 'income' ? 'bg-emerald-500/10 text-emerald-400' : 'bg-brand-indigo/10 text-brand-indigo'
+                      }`}>
+                        {t.type === 'income' ? <Plus className="h-4 w-4" /> : <Minus className="h-4 w-4" />}
+                      </div>
+                      <div>
+                        <span className="text-sm font-semibold text-white block">{t.title}</span>
+                        <span className="text-[10px] text-gray-400 font-medium bg-white/5 px-2 py-0.5 rounded-full mt-0.5 inline-block">
+                          {t.category || 'Other'}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <span className={`text-sm font-bold block ${
+                        t.type === 'income' ? 'text-emerald-400' : 'text-rose-400'
+                      }`}>
+                        {t.type === 'income' ? '+' : '-'}₹{t.amount.toLocaleString()}
+                      </span>
+                      <span className="text-[9px] text-gray-500 block mt-0.5">{t.paymentMode || 'Cash'}</span>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="py-8 text-center text-gray-400 text-sm">
+                  No transactions logged on this day.
+                </div>
+              )}
+            </div>
+
+            {/* Modal Footer */}
+            <div className="p-6 bg-slate-950/20 border-t border-white/5 flex justify-end">
+              <button 
+                onClick={() => setSelectedDate(null)}
+                className="bg-gradient-to-r from-brand-indigo to-brand-purple hover:brightness-110 px-5 py-2 rounded-xl font-semibold text-sm text-white shadow shadow-brand-indigo/10 transition-all"
+              >
+                Close Window
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
     </div>
   );
