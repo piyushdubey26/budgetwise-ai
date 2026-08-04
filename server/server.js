@@ -6,6 +6,7 @@ import mongoSanitize from 'express-mongo-sanitize';
 import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import fs from 'fs';
 
 import { connectDB } from './config/db.js';
 import apiRouter from './routes/api.js';
@@ -186,7 +187,13 @@ async function runScheduler() {
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, '../client/dist')));
   app.get('*', (req, res) => {
-    res.sendFile(path.resolve(__dirname, '../client', 'dist', 'index.html'));
+    const indexPath = path.resolve(__dirname, '../client', 'dist', 'index.html');
+    console.log(`[Static] Request for ${req.url}, resolving to ${indexPath}. Exists: ${fs.existsSync(indexPath)}`);
+    if (fs.existsSync(indexPath)) {
+      res.sendFile(indexPath);
+    } else {
+      res.status(404).send(`Frontend build not found at: ${indexPath}`);
+    }
   });
 } else {
   app.get('/', (req, res) => {
