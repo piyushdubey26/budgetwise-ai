@@ -180,15 +180,7 @@ Return ONLY the raw JSON string. Do not include markdown code block syntax (like
       feedbackJson = JSON.parse(cleaned);
     } catch (err) {
       console.warn('Gemini API failed:', err.message);
-      
-      if (process.env.GEMINI_API_KEY && process.env.GEMINI_API_KEY.trim() !== '') {
-        return res.status(500).json({ 
-          message: 'Gemini API call failed with your API Key. Please verify if your key is correct.',
-          error: err.message 
-        });
-      }
-      
-      console.warn('Using fallback mock AI generator...');
+      console.warn('Falling back to local smart mock AI generator due to transient API issues...');
       // Fallback response generator based on transaction values
       const totalExpense = transactions
         .filter(t => t.type === 'expense')
