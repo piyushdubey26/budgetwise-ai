@@ -80,7 +80,7 @@ export default function Transactions({ refresh }) {
 
   const [walletForm, setWalletForm] = useState({ name: '', type: 'cash', balance: 0 });
   const [transferForm, setTransferForm] = useState({ sourceWalletId: '', targetWalletId: '', amount: '' });
-  const [budgetForm, setBudgetForm] = useState({ month: new Date().toISOString().substring(0, 7), category: 'All', amount: '' });
+  const [budgetForm, setBudgetForm] = useState({ month: new Date().toISOString().substring(0, 7), category: 'All', amount: '', walletId: '' });
   const [importFile, setImportFile] = useState(null);
 
   // Inline editing states
@@ -247,7 +247,7 @@ export default function Transactions({ refresh }) {
     try {
       await axios.post('/api/budgets', budgetForm);
       setShowSetBudget(false);
-      setBudgetForm({ month: new Date().toISOString().substring(0, 7), category: 'All', amount: '' });
+      setBudgetForm({ month: new Date().toISOString().substring(0, 7), category: 'All', amount: '', walletId: '' });
       if (refresh) refresh();
     } catch (e) {
       alert(e.response?.data?.message || 'Failed to set budget');
@@ -769,7 +769,12 @@ export default function Transactions({ refresh }) {
                     <div className="flex justify-between items-start mb-2">
                       <div>
                         <span className="text-sm font-bold text-white block">{b.category} Budget</span>
-                        <span className="text-[10px] text-gray-400">Month: {b.month}</span>
+                        <span className="text-[10px] text-gray-400 block">Month: {b.month}</span>
+                        {b.walletId && (
+                          <span className="text-[10px] text-brand-purple font-semibold mt-0.5 block">
+                            Wallet: {wallets.find(w => w._id === b.walletId)?.name || 'Wallet'}
+                          </span>
+                        )}
                       </div>
                       <span className={`text-xs font-extrabold ${percent >= 100 ? 'text-rose-400' : percent >= 80 ? 'text-amber-400' : 'text-brand-purple'}`}>{percent}%</span>
                     </div>
@@ -1039,6 +1044,17 @@ export default function Transactions({ refresh }) {
                   >
                     <option value="All">All Expenses (Overall Month)</option>
                     {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="text-[10px] font-bold text-gray-400 uppercase block mb-1">Target Wallet (Optional)</label>
+                  <select 
+                    value={budgetForm.walletId} onChange={e => setBudgetForm({ ...budgetForm, walletId: e.target.value })}
+                    className="w-full bg-slate-950 border border-white/10 rounded-xl px-3 py-2 text-xs focus:outline-none cursor-pointer"
+                  >
+                    <option value="">All Wallets combined</option>
+                    {wallets.map(w => <option key={w._id} value={w._id}>{w.name}</option>)}
                   </select>
                 </div>
 

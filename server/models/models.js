@@ -51,6 +51,7 @@ export const Budget = defineModel('Budget', {
   userId: { type: String, required: true },
   month: { type: String, required: true }, // YYYY-MM
   category: { type: String, default: 'All' }, 
+  walletId: { type: String }, // Optional wallet-specific budget tracking
   amount: { type: Number, required: true },
   spent: { type: Number, default: 0 }
 });

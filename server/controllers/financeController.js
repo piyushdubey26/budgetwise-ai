@@ -144,7 +144,12 @@ export const addTransaction = async (req, res) => {
       const matchingBudgets = await Budget.find({
         userId,
         month: transactionMonth,
-        category: { $in: [category, 'All'] }
+        category: { $in: [category, 'All'] },
+        $or: [
+          { walletId: sourceWalletId },
+          { walletId: { $exists: false } },
+          { walletId: null }
+        ]
       });
 
       for (const budget of matchingBudgets) {
@@ -232,7 +237,12 @@ export const deleteTransaction = async (req, res) => {
       const matchingBudgets = await Budget.find({
         userId,
         month: transactionMonth,
-        category: { $in: [trans.category, 'All'] }
+        category: { $in: [trans.category, 'All'] },
+        $or: [
+          { walletId: trans.sourceWalletId },
+          { walletId: { $exists: false } },
+          { walletId: null }
+        ]
       });
       for (const budget of matchingBudgets) {
         const newSpent = Math.max(0, (budget.spent || 0) - numericAmount);
@@ -266,36 +276,44 @@ export const getBudgets = async (req, res) => {
 
 export const createBudget = async (req, res) => {
   try {
-    const { month, category, amount } = req.body;
+    const { month, category, amount, walletId } = req.body;
     const userId = req.user.id;
 
     if (!month || !amount) {
       return res.status(400).json({ message: 'Month and budget amount are required.' });
     }
 
-    // Check if budget for this month/category already exists
-    const existing = await Budget.findOne({ userId, month, category: category || 'All' });
+    // Check if budget for this month/category/wallet already exists
+    const budgets = await Budget.find({ userId, month, category: category || 'All' });
+    const existing = budgets.find(b => walletId ? b.walletId === walletId : !b.walletId);
+
     if (existing) {
       const updated = await Budget.findByIdAndUpdate(existing._id, { amount: parseFloat(amount) });
       return res.status(200).json(updated);
     }
 
-    // Calculate current month expense for this category to pre-populate spent
+    // Calculate current month expense for this category and wallet to pre-populate spent
     const trans = await Transaction.find({ userId, type: 'expense' });
     const categoryExpenses = trans.filter(t => {
       const transMonth = t.date.substring(0, 7);
       const categoryMatch = category ? t.category === category : true;
-      return transMonth === month && categoryMatch;
+      const walletMatch = walletId ? t.sourceWalletId === walletId : true;
+      return transMonth === month && categoryMatch && walletMatch;
     });
     const totalSpent = categoryExpenses.reduce((sum, t) => sum + t.amount, 0);
 
-    const budget = await Budget.create({
+    const budgetData = {
       userId,
       month,
       category: category || 'All',
       amount: parseFloat(amount),
       spent: totalSpent
-    });
+    };
+    if (walletId) {
+      budgetData.walletId = walletId;
+    }
+
+    const budget = await Budget.create(budgetData);
 
     res.status(201).json(budget);
   } catch (err) {
@@ -699,7 +717,7 @@ export const getDashboardSummary = async (req, res) => {
     const savingsRate = totalIncome > 0 ? Math.max(0, (savings / totalIncome) * 100) : 0;
 
     // Budget summary
-    const overallBudget = budgets.find(b => b.category === 'All');
+    const overallBudget = budgets.find(b => b.category === 'All' && !b.walletId) || budgets.find(b => b.category === 'All');
     const budgetLimit = overallBudget ? overallBudget.amount : 0;
     const budgetSpent = overallBudget ? overallBudget.spent : totalExpense;
     const budgetRemaining = Math.max(0, budgetLimit - budgetSpent);
@@ -756,7 +774,12 @@ export const updateTransaction = async (req, res) => {
       const matchingBudgets = await Budget.find({
         userId,
         month: transactionMonth,
-        category: { $in: [trans.category, 'All'] }
+        category: { $in: [trans.category, 'All'] },
+        $or: [
+          { walletId: trans.sourceWalletId },
+          { walletId: { $exists: false } },
+          { walletId: null }
+        ]
       });
       for (const budget of matchingBudgets) {
         await Budget.findByIdAndUpdate(budget._id, { spent: Math.max(0, (budget.spent || 0) - oldAmount) });
@@ -776,10 +799,17 @@ export const updateTransaction = async (req, res) => {
       }
       // Apply new budgets (both category-specific and overall)
       const transactionMonth = date.substring(0, 7);
+      const newWallet = await Wallet.findOne({ userId, name: paymentMode });
+      const newWalletId = newWallet ? newWallet._id : null;
       const matchingBudgets = await Budget.find({
         userId,
         month: transactionMonth,
-        category: { $in: [category, 'All'] }
+        category: { $in: [category, 'All'] },
+        $or: [
+          ...(newWalletId ? [{ walletId: newWalletId }] : []),
+          { walletId: { $exists: false } },
+          { walletId: null }
+        ]
       });
       for (const budget of matchingBudgets) {
         await Budget.findByIdAndUpdate(budget._id, { spent: (budget.spent || 0) + newAmount });
