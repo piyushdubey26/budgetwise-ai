@@ -321,6 +321,23 @@ export const createBudget = async (req, res) => {
   }
 };
 
+export const deleteBudget = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userId = req.user.id;
+
+    const budget = await Budget.findById(id);
+    if (!budget || budget.userId !== userId) {
+      return res.status(404).json({ message: 'Budget not found.' });
+    }
+
+    await Budget.findByIdAndDelete(id);
+    res.status(200).json({ message: 'Budget deleted successfully.' });
+  } catch (err) {
+    res.status(500).json({ message: 'Error deleting budget.', error: err.message });
+  }
+};
+
 // ==========================================
 // SAVINGS GOAL CONTROLLERS
 // ==========================================

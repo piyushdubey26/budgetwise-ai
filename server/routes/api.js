@@ -57,6 +57,7 @@ router.delete('/transactions/:id', auth, finCtrl.deleteTransaction);
 // ==========================================
 router.get('/budgets', auth, finCtrl.getBudgets);
 router.post('/budgets', auth, finCtrl.createBudget);
+router.delete('/budgets/:id', auth, finCtrl.deleteBudget);
 
 // ==========================================
 // SAVINGS GOAL ROUTES

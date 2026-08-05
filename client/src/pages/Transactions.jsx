@@ -255,7 +255,25 @@ export default function Transactions({ refresh }) {
       setIsSettingBudget(false);
     }
   };
+  const handleEditBudget = (b) => {
+    setBudgetForm({
+      month: b.month,
+      category: b.category,
+      amount: b.amount.toString(),
+      walletId: b.walletId || ''
+    });
+    setShowSetBudget(true);
+  };
 
+  const handleDeleteBudget = async (budgetId) => {
+    if (!confirm('Are you sure you want to permanently delete this budget limit?')) return;
+    try {
+      await axios.delete(`/api/budgets/${budgetId}`);
+      if (refresh) refresh();
+    } catch (e) {
+      alert(e.response?.data?.message || 'Failed to delete budget');
+    }
+  };
   const handleImport = async (e) => {
     e.preventDefault();
     if (!importFile || isImporting) return;
@@ -776,7 +794,25 @@ export default function Transactions({ refresh }) {
                           </span>
                         )}
                       </div>
-                      <span className={`text-xs font-extrabold ${percent >= 100 ? 'text-rose-400' : percent >= 80 ? 'text-amber-400' : 'text-brand-purple'}`}>{percent}%</span>
+                      <div className="flex items-center gap-3">
+                        <span className={`text-xs font-extrabold ${percent >= 100 ? 'text-rose-400' : percent >= 80 ? 'text-amber-400' : 'text-brand-purple'}`}>{percent}%</span>
+                        <div className="flex gap-1">
+                          <button
+                            onClick={() => handleEditBudget(b)}
+                            className="p-1 rounded text-gray-500 hover:text-white hover:bg-white/10 transition-all cursor-pointer"
+                            title="Edit Budget"
+                          >
+                            <Edit className="h-3.5 w-3.5" />
+                          </button>
+                          <button
+                            onClick={() => handleDeleteBudget(b._id)}
+                            className="p-1 rounded text-gray-500 hover:text-rose-400 hover:bg-rose-500/10 transition-all cursor-pointer"
+                            title="Delete Budget"
+                          >
+                            <Trash2 className="h-3.5 w-3.5" />
+                          </button>
+                        </div>
+                      </div>
                     </div>
 
                     <div>
