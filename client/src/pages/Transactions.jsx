@@ -63,6 +63,13 @@ export default function Transactions({ refresh }) {
   const [showSetBudget, setShowSetBudget] = useState(false);
   const [showImport, setShowImport] = useState(false);
 
+  // Loading states for form submissions to prevent double-clicks
+  const [isAddingTx, setIsAddingTx] = useState(false);
+  const [isAddingWallet, setIsAddingWallet] = useState(false);
+  const [isTransferring, setIsTransferring] = useState(false);
+  const [isSettingBudget, setIsSettingBudget] = useState(false);
+  const [isImporting, setIsImporting] = useState(false);
+
   // Form states
   const [txForm, setTxForm] = useState({
     title: '', amount: '', type: 'expense', category: 'Food', 
@@ -165,6 +172,8 @@ export default function Transactions({ refresh }) {
 
   const handleAddTx = async (e) => {
     e.preventDefault();
+    if (isAddingTx) return;
+    setIsAddingTx(true);
     try {
       const parsedTags = txForm.tags ? txForm.tags.split(',').map(t => t.trim()) : [];
       await axios.post('/api/transactions', {
@@ -186,11 +195,15 @@ export default function Transactions({ refresh }) {
       if (refresh) refresh();
     } catch (e) {
       alert(e.response?.data?.message || 'Failed to add transaction');
+    } finally {
+      setIsAddingTx(false);
     }
   };
 
   const handleAddWallet = async (e) => {
     e.preventDefault();
+    if (isAddingWallet) return;
+    setIsAddingWallet(true);
     try {
       await axios.post('/api/wallets', walletForm);
       setShowAddWallet(false);
@@ -198,11 +211,15 @@ export default function Transactions({ refresh }) {
       if (refresh) refresh();
     } catch (e) {
       alert(e.response?.data?.message || 'Failed to create wallet');
+    } finally {
+      setIsAddingWallet(false);
     }
   };
 
   const handleTransfer = async (e) => {
     e.preventDefault();
+    if (isTransferring) return;
+    setIsTransferring(true);
     try {
       await axios.post('/api/transactions', {
         title: 'Wallet Transfer',
@@ -218,11 +235,15 @@ export default function Transactions({ refresh }) {
       if (refresh) refresh();
     } catch (e) {
       alert(e.response?.data?.message || 'Transfer failed');
+    } finally {
+      setIsTransferring(false);
     }
   };
 
   const handleSetBudget = async (e) => {
     e.preventDefault();
+    if (isSettingBudget) return;
+    setIsSettingBudget(true);
     try {
       await axios.post('/api/budgets', budgetForm);
       setShowSetBudget(false);
@@ -230,12 +251,15 @@ export default function Transactions({ refresh }) {
       if (refresh) refresh();
     } catch (e) {
       alert(e.response?.data?.message || 'Failed to set budget');
+    } finally {
+      setIsSettingBudget(false);
     }
   };
 
   const handleImport = async (e) => {
     e.preventDefault();
-    if (!importFile) return;
+    if (!importFile || isImporting) return;
+    setIsImporting(true);
     const formData = new FormData();
     formData.append('statement', importFile);
     try {
@@ -247,6 +271,8 @@ export default function Transactions({ refresh }) {
       if (refresh) refresh();
     } catch (e) {
       alert(e.response?.data?.message || 'Import failed');
+    } finally {
+      setIsImporting(false);
     }
   };
 
@@ -712,9 +738,12 @@ export default function Transactions({ refresh }) {
 
               <button 
                 type="submit"
-                className="w-full py-2.5 bg-gradient-to-r from-brand-indigo to-brand-purple hover:brightness-110 text-white font-bold text-xs rounded-xl shadow-lg transition-all"
+                disabled={isTransferring}
+                className={`w-full py-2.5 bg-gradient-to-r from-brand-indigo to-brand-purple hover:brightness-110 text-white font-bold text-xs rounded-xl shadow-lg transition-all cursor-pointer ${
+                  isTransferring ? 'opacity-50 cursor-not-allowed' : ''
+                }`}
               >
-                Perform Atomic Transfer
+                {isTransferring ? 'Transferring...' : 'Perform Atomic Transfer'}
               </button>
             </form>
           </div>
@@ -894,9 +923,12 @@ export default function Transactions({ refresh }) {
 
                 <button 
                   type="submit"
-                  className="w-full py-2.5 bg-gradient-to-r from-brand-indigo to-brand-purple hover:brightness-110 text-white font-bold text-xs rounded-xl shadow-lg transition-all mt-4"
+                  disabled={isAddingTx}
+                  className={`w-full py-2.5 bg-gradient-to-r from-brand-indigo to-brand-purple hover:brightness-110 text-white font-bold text-xs rounded-xl shadow-lg transition-all mt-4 cursor-pointer ${
+                    isAddingTx ? 'opacity-50 cursor-not-allowed' : ''
+                  }`}
                 >
-                  Log Transaction
+                  {isAddingTx ? 'Logging Transaction...' : 'Log Transaction'}
                 </button>
               </form>
             </motion.div>
@@ -961,9 +993,12 @@ export default function Transactions({ refresh }) {
 
                 <button 
                   type="submit"
-                  className="w-full py-2.5 bg-gradient-to-r from-brand-indigo to-brand-purple hover:brightness-110 text-white font-bold text-xs rounded-xl shadow-lg transition-all"
+                  disabled={isAddingWallet}
+                  className={`w-full py-2.5 bg-gradient-to-r from-brand-indigo to-brand-purple hover:brightness-110 text-white font-bold text-xs rounded-xl shadow-lg transition-all cursor-pointer ${
+                    isAddingWallet ? 'opacity-50 cursor-not-allowed' : ''
+                  }`}
                 >
-                  Create Wallet
+                  {isAddingWallet ? 'Creating Wallet...' : 'Create Wallet'}
                 </button>
               </form>
             </motion.div>
@@ -1018,9 +1053,12 @@ export default function Transactions({ refresh }) {
 
                 <button 
                   type="submit"
-                  className="w-full py-2.5 bg-gradient-to-r from-brand-indigo to-brand-purple hover:brightness-110 text-white font-bold text-xs rounded-xl shadow-lg transition-all"
+                  disabled={isSettingBudget}
+                  className={`w-full py-2.5 bg-gradient-to-r from-brand-indigo to-brand-purple hover:brightness-110 text-white font-bold text-xs rounded-xl shadow-lg transition-all cursor-pointer ${
+                    isSettingBudget ? 'opacity-50 cursor-not-allowed' : ''
+                  }`}
                 >
-                  Configure Budget
+                  {isSettingBudget ? 'Configuring Budget...' : 'Configure Budget'}
                 </button>
               </form>
             </motion.div>
@@ -1059,10 +1097,12 @@ export default function Transactions({ refresh }) {
 
                 <button 
                   type="submit"
-                  disabled={!importFile}
-                  className="w-full py-2.5 bg-gradient-to-r from-brand-indigo to-brand-purple hover:brightness-110 disabled:opacity-50 text-white font-bold text-xs rounded-xl shadow-lg transition-all"
+                  disabled={!importFile || isImporting}
+                  className={`w-full py-2.5 bg-gradient-to-r from-brand-indigo to-brand-purple hover:brightness-110 disabled:opacity-50 text-white font-bold text-xs rounded-xl shadow-lg transition-all cursor-pointer ${
+                    isImporting ? 'opacity-50 cursor-not-allowed' : ''
+                  }`}
                 >
-                  Parse & Import Entries
+                  {isImporting ? 'Parsing & Importing...' : 'Parse & Import Entries'}
                 </button>
               </form>
             </motion.div>
