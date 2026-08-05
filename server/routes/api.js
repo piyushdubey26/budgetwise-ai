@@ -104,6 +104,8 @@ router.post('/subscriptions', auth, finCtrl.addSubscription);
 // ==========================================
 router.get('/notifications', auth, finCtrl.getNotifications);
 router.put('/notifications/:id', auth, finCtrl.markNotificationRead);
+router.post('/feedback', auth, finCtrl.submitFeedback);
+router.get('/feedback/my', auth, finCtrl.getMyFeedback);
 
 // ==========================================
 // DASHBOARD & ANALYTICS SUMMARY

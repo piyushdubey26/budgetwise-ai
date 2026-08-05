@@ -14,6 +14,7 @@ import Investments from './pages/Investments.jsx';
 import Settings from './pages/Settings.jsx';
 import Admin from './pages/Admin.jsx';
 import Login from './pages/Login.jsx';
+import FeedbackPage from './pages/FeedbackPage.jsx';
 import Signup from './pages/Signup.jsx';
 import AdminDashboard from './pages/AdminDashboard.jsx';
 
@@ -167,6 +168,7 @@ export default function App() {
         <Route path="bills-subs" element={<BillsSubscriptions refresh={fetchUserData} />} />
         <Route path="investments" element={<Investments refresh={fetchUserData} />} />
         <Route path="settings" element={<Settings refresh={fetchUserData} />} />
+        <Route path="feedback" element={<FeedbackPage />} />
         <Route path="admin" element={<Admin />} />
       </Route>
       

@@ -10,7 +10,8 @@ import {
   Emi,
   Notification,
   User,
-  Setting
+  Setting,
+  Feedback
 } from '../models/models.js';
 
 // Helper to gain XP and Coins for Gamification
@@ -848,5 +849,38 @@ export const updateTransaction = async (req, res) => {
     res.status(200).json({ message: 'Transaction updated successfully.', transaction: updated });
   } catch (err) {
     res.status(500).json({ message: 'Error updating transaction.', error: err.message });
+  }
+};
+
+export const submitFeedback = async (req, res) => {
+  try {
+    const { rating, comment } = req.body;
+    const userId = req.user.id;
+    const user = await User.findById(userId);
+    const userName = user ? user.name : 'Unknown User';
+
+    if (!rating || !comment) {
+      return res.status(400).json({ message: 'Rating and comment are required.' });
+    }
+
+    const feedback = await Feedback.create({
+      userId,
+      userName,
+      rating: parseInt(rating),
+      comment
+    });
+
+    res.status(201).json({ message: 'Feedback submitted successfully.', feedback });
+  } catch (err) {
+    res.status(500).json({ message: 'Error submitting feedback.', error: err.message });
+  }
+};
+
+export const getMyFeedback = async (req, res) => {
+  try {
+    const feedbacks = await Feedback.find({ userId: req.user.id });
+    res.status(200).json(feedbacks);
+  } catch (err) {
+    res.status(500).json({ message: 'Error fetching feedback history.', error: err.message });
   }
 };

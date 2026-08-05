@@ -18,6 +18,7 @@ import {
   X,
   TrendingUp,
   Shield,
+  MessageSquare,
   UserCheck,
   Sun,
   Moon
@@ -66,6 +67,7 @@ export default function Layout() {
     { name: 'AI Finance Advisor', path: '/ai-advisor', icon: Cpu },
     { name: 'Bills & Subscriptions', path: '/bills-subs', icon: Calendar },
     { name: 'Investments', path: '/investments', icon: TrendingUp },
+    { name: 'Feedback Hub', path: '/feedback', icon: MessageSquare },
     { name: 'Settings', path: '/settings', icon: Settings },
   ];
 
