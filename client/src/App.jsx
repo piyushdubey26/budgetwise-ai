@@ -32,6 +32,9 @@ import {
   setSummary
 } from './store/financeSlice.js';
 
+// Configure API URL dynamically based on environment (local vs Vercel)
+axios.defaults.baseURL = import.meta.env.VITE_API_URL || '';
+
 function PrivateRoute({ children }) {
   const { isAuthenticated } = useSelector((state) => state.auth);
   return isAuthenticated ? children : <Navigate to="/login" replace />;

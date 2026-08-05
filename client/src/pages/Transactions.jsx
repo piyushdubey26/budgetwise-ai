@@ -251,7 +251,8 @@ export default function Transactions({ refresh }) {
   };
 
   const handleExport = (format) => {
-    window.open(`/api/reports/export?format=${format}&token=${localStorage.getItem('token') || ''}`, '_blank');
+    const apiBase = import.meta.env.VITE_API_URL || '';
+    window.open(`${apiBase}/api/reports/export?format=${format}&token=${localStorage.getItem('token') || ''}`, '_blank');
   };
 
   // Filtered transactions
