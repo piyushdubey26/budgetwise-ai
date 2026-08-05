@@ -9,7 +9,8 @@ import {
   CheckCircle, 
   X, 
   AlertCircle,
-  PiggyBank
+  PiggyBank,
+  Trash2
 } from 'lucide-react';
 import axios from 'axios';
 import { addCoinsXP } from '../store/authSlice.js';
@@ -71,6 +72,16 @@ export default function Goals({ refresh }) {
       alert(e.response?.data?.message || 'Deposit failed');
     } finally {
       setIsDepositing(false);
+    }
+  };
+
+  const handleDeleteGoal = async (goalId) => {
+    if (!confirm('Are you sure you want to permanently delete this savings goal?')) return;
+    try {
+      await axios.delete(`/api/goals/${goalId}`);
+      if (refresh) refresh();
+    } catch (err) {
+      alert(err.response?.data?.message || 'Failed to delete goal');
     }
   };
 
@@ -161,13 +172,22 @@ export default function Goals({ refresh }) {
                           <span className="text-sm font-bold text-white block">{g.name}</span>
                           <span className="text-[10px] text-gray-400 uppercase tracking-widest">{g.category}</span>
                         </div>
-                        {isCompleted ? (
-                          <span className="flex items-center gap-1 text-[10px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
-                            <CheckCircle className="h-3 w-3" /> Completed
-                          </span>
-                        ) : (
-                          <span className="text-xs font-extrabold text-brand-purple">{percent}%</span>
-                        )}
+                        <div className="flex items-center gap-2">
+                          {isCompleted ? (
+                            <span className="flex items-center gap-1 text-[10px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
+                              <CheckCircle className="h-3 w-3" /> Completed
+                            </span>
+                          ) : (
+                            <span className="text-xs font-extrabold text-brand-purple">{percent}%</span>
+                          )}
+                          <button
+                            onClick={() => handleDeleteGoal(g._id)}
+                            className="p-1 rounded-lg text-gray-500 hover:text-rose-400 hover:bg-rose-500/10 transition-all cursor-pointer"
+                            title="Delete Goal"
+                          >
+                            <Trash2 className="h-3.5 w-3.5" />
+                          </button>
+                        </div>
                       </div>
                       <p className="text-[10px] text-gray-500 mt-1">Target date: {g.dueDate || 'No Limit'}</p>
                     </div>

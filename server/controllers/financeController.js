@@ -394,6 +394,23 @@ export const depositToGoal = async (req, res) => {
   }
 };
 
+export const deleteGoal = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userId = req.user.id;
+
+    const goal = await Goal.findById(id);
+    if (!goal || goal.userId !== userId) {
+      return res.status(404).json({ message: 'Goal not found.' });
+    }
+
+    await Goal.findByIdAndDelete(id);
+    res.status(200).json({ message: 'Goal deleted successfully.' });
+  } catch (err) {
+    res.status(500).json({ message: 'Error deleting goal.', error: err.message });
+  }
+};
+
 // ==========================================
 // INVESTMENT CONTROLLERS
 // ==========================================

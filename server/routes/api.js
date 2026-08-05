@@ -64,6 +64,7 @@ router.post('/budgets', auth, finCtrl.createBudget);
 router.get('/goals', auth, finCtrl.getGoals);
 router.post('/goals', auth, finCtrl.createGoal);
 router.post('/goals/:id/deposit', auth, finCtrl.depositToGoal);
+router.delete('/goals/:id', auth, finCtrl.deleteGoal);
 
 // ==========================================
 // INVESTMENT ROUTES
