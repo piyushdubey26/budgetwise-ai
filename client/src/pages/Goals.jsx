@@ -26,8 +26,14 @@ export default function Goals({ refresh }) {
   const [goalForm, setGoalForm] = useState({ name: '', targetAmount: '', currentAmount: '', category: 'Electronics', dueDate: '' });
   const [depositForm, setDepositForm] = useState({ amount: '', walletId: '' });
 
+  // Submitting locks to prevent double clicks
+  const [isCreatingGoal, setIsCreatingGoal] = useState(false);
+  const [isDepositing, setIsDepositing] = useState(false);
+
   const handleCreateGoal = async (e) => {
     e.preventDefault();
+    if (isCreatingGoal) return;
+    setIsCreatingGoal(true);
     try {
       await axios.post('/api/goals', goalForm);
       setShowAddGoal(false);
@@ -35,12 +41,15 @@ export default function Goals({ refresh }) {
       if (refresh) refresh();
     } catch (e) {
       alert(e.response?.data?.message || 'Failed to create goal');
+    } finally {
+      setIsCreatingGoal(false);
     }
   };
 
   const handleDeposit = async (e) => {
     e.preventDefault();
-    if (!selectedGoal) return;
+    if (!selectedGoal || isDepositing) return;
+    setIsDepositing(true);
     try {
       const res = await axios.post(`/api/goals/${selectedGoal._id}/deposit`, depositForm);
       
@@ -60,6 +69,8 @@ export default function Goals({ refresh }) {
       if (refresh) refresh();
     } catch (e) {
       alert(e.response?.data?.message || 'Deposit failed');
+    } finally {
+      setIsDepositing(false);
     }
   };
 
@@ -328,9 +339,12 @@ export default function Goals({ refresh }) {
 
                 <button 
                   type="submit"
-                  className="w-full py-2.5 bg-gradient-to-r from-brand-indigo to-brand-purple hover:brightness-110 text-white font-bold text-xs rounded-xl shadow-lg transition-all"
+                  disabled={isCreatingGoal}
+                  className={`w-full py-2.5 bg-gradient-to-r from-brand-indigo to-brand-purple hover:brightness-110 text-white font-bold text-xs rounded-xl shadow-lg transition-all cursor-pointer ${
+                    isCreatingGoal ? 'opacity-50 cursor-not-allowed' : ''
+                  }`}
                 >
-                  Create Goal
+                  {isCreatingGoal ? 'Creating Goal...' : 'Create Goal'}
                 </button>
               </form>
             </motion.div>
@@ -381,9 +395,12 @@ export default function Goals({ refresh }) {
 
                 <button 
                   type="submit"
-                  className="w-full py-2.5 bg-gradient-to-r from-brand-indigo to-brand-purple hover:brightness-110 text-white font-bold text-xs rounded-xl shadow-lg transition-all"
+                  disabled={isDepositing}
+                  className={`w-full py-2.5 bg-gradient-to-r from-brand-indigo to-brand-purple hover:brightness-110 text-white font-bold text-xs rounded-xl shadow-lg transition-all cursor-pointer ${
+                    isDepositing ? 'opacity-50 cursor-not-allowed' : ''
+                  }`}
                 >
-                  Approve Deposit
+                  {isDepositing ? 'Depositing...' : 'Approve Deposit'}
                 </button>
               </form>
             </motion.div>
