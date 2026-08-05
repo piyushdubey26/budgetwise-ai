@@ -139,13 +139,15 @@ export const addTransaction = async (req, res) => {
       const wallet = await Wallet.findById(sourceWalletId);
       await Wallet.findByIdAndUpdate(sourceWalletId, { balance: wallet.balance - numericAmount });
 
-      // Budget Calculation
+      // Budget Calculation (updates both category-specific and overall budgets)
       const transactionMonth = date.substring(0, 7); // YYYY-MM
-      // Find matching budget (either category specific or total monthly budget)
-      let budget = await Budget.findOne({ userId, month: transactionMonth, category }) ||
-                     await Budget.findOne({ userId, month: transactionMonth, category: 'All' });
+      const matchingBudgets = await Budget.find({
+        userId,
+        month: transactionMonth,
+        category: { $in: [category, 'All'] }
+      });
 
-      if (budget) {
+      for (const budget of matchingBudgets) {
         const newSpent = (budget.spent || 0) + numericAmount;
         const newRemaining = budget.amount - newSpent;
         const oldUsagePercent = ((budget.spent || 0) / budget.amount) * 100;
@@ -225,12 +227,15 @@ export const deleteTransaction = async (req, res) => {
         await Wallet.findByIdAndUpdate(trans.sourceWalletId, { balance: wallet.balance + numericAmount });
       }
 
-      // Rollback budget
+      // Rollback budget for all matching budgets (category-specific and overall)
       const transactionMonth = trans.date.substring(0, 7);
-      let budget = await Budget.findOne({ userId, month: transactionMonth, category: trans.category }) ||
-                     await Budget.findOne({ userId, month: transactionMonth, category: 'All' });
-      if (budget) {
-        const newSpent = Math.max(0, budget.spent - numericAmount);
+      const matchingBudgets = await Budget.find({
+        userId,
+        month: transactionMonth,
+        category: { $in: [trans.category, 'All'] }
+      });
+      for (const budget of matchingBudgets) {
+        const newSpent = Math.max(0, (budget.spent || 0) - numericAmount);
         await Budget.findByIdAndUpdate(budget._id, { spent: newSpent });
       }
     } else if (trans.type === 'transfer') {
@@ -746,12 +751,15 @@ export const updateTransaction = async (req, res) => {
       if (wallet) {
         await Wallet.findByIdAndUpdate(wallet._id, { balance: wallet.balance + oldAmount });
       }
-      // Rollback budget
+      // Rollback budgets (both category-specific and overall)
       const transactionMonth = trans.date.substring(0, 7);
-      let budget = await Budget.findOne({ userId, month: transactionMonth, category: trans.category }) ||
-                     await Budget.findOne({ userId, month: transactionMonth, category: 'All' });
-      if (budget) {
-        await Budget.findByIdAndUpdate(budget._id, { spent: Math.max(0, budget.spent - oldAmount) });
+      const matchingBudgets = await Budget.find({
+        userId,
+        month: transactionMonth,
+        category: { $in: [trans.category, 'All'] }
+      });
+      for (const budget of matchingBudgets) {
+        await Budget.findByIdAndUpdate(budget._id, { spent: Math.max(0, (budget.spent || 0) - oldAmount) });
       }
     }
 
@@ -766,11 +774,14 @@ export const updateTransaction = async (req, res) => {
       if (wallet) {
         await Wallet.findByIdAndUpdate(wallet._id, { balance: wallet.balance - newAmount });
       }
-      // Apply budget
+      // Apply new budgets (both category-specific and overall)
       const transactionMonth = date.substring(0, 7);
-      let budget = await Budget.findOne({ userId, month: transactionMonth, category }) ||
-                     await Budget.findOne({ userId, month: transactionMonth, category: 'All' });
-      if (budget) {
+      const matchingBudgets = await Budget.find({
+        userId,
+        month: transactionMonth,
+        category: { $in: [category, 'All'] }
+      });
+      for (const budget of matchingBudgets) {
         await Budget.findByIdAndUpdate(budget._id, { spent: (budget.spent || 0) + newAmount });
       }
     }
