@@ -18,8 +18,13 @@ Designed with a sleek glassmorphic theme supporting seamless **Light & Dark mode
 - **Gamified Financial Ledger**: Earn XP and Gold Coins dynamically by tracking expenses, updating wallets, and completing active savings milestones. Level up your finance rank from Level 1 upwards.
 - **Smart Dual-Mode Database**: Operates using a custom file-based mock Mongoose database (`server/data/*.json`) when no `MONGO_URI` is provided, and automatically switches to high-availability MongoDB Atlas when connection keys are present.
 - **Receipt OCR Parsing**: Drag and drop shopping invoices. Utilizes `Tesseract.js` + Google Gemini APIs to instantly parse Merchant Name, Invoice Date, total amounts, and tax breakdowns.
-- **AI Financial Advisory**: Analyzes your monthly heatmaps, wallet trends, and budget warnings to give contextual, actionable suggestions via `gemini-1.5-flash`.
+- **AI Financial Advisory with Smart Fallback**: Analyzes monthly heatmaps and budget metrics to generate advice. Fully resilient to Google server overloads: if the Gemini API fails (e.g. 503 Service Unavailable), the system **automatically falls back to a local Smart AI recommendation generator** using real DB metrics.
+- **Wallet-Specific Budgets**: Budgets can be bound to specific wallets (e.g., isolating `month` wallet budget from `month budget for food` wallet) or set globally.
+- **Interactive Budget Management**: Delete or edit active budgets directly from the UI with dedicated Edit and Delete icons.
+- **Feedback Hub**: Users can submit star-based (1-5 stars) ratings and comments. History logs display their past submissions along with **real-time Admin Replies**.
+- **Interactive Goals & Milestones**: Add, modify, deposit savings to, and permanently delete savings goals (with trash icon control and double-submission protection).
 - **Payment & Premium Simulator**: Complete Razorpay-styled premium upgrade checkout widget simulation (UPI, netbanking, cards) with transaction log ledgers.
+- **Double-Click Submission Prevention**: Integrated loading states and submit locks (e.g., `Logging Transaction...`, `Creating Goal...`, `Depositing...`) on all submit buttons to block accidental duplicates on slow connections.
 - **Auto-Billing Scheduler**: Startup cron job checks upcoming EMI cycles, subscription billings, and utility reminders, automatically deducting balances from wallets and logging notification cards.
 - **Export Formats**: Generate detailed statements in PDF format (using `pdfkit`) or raw Excel spreadsheets (using `xlsx`).
 - **Dynamic Theme Switcher**: One-click Sun ☀️ / Moon 🌙 theme toggle integrated into the header, dynamically remapping styling layouts and persisting preference parameters to the user profile settings.
@@ -28,8 +33,8 @@ Designed with a sleek glassmorphic theme supporting seamless **Light & Dark mode
 - **Interactive Analytics**: Monitor total registered users, active user ratios, monthly signup trends, and total premium subscription revenue charts.
 - **User Operations Control**: Search, inspect, suspend, reactivate, manually grant/revoke PRO memberships, or wipe user accounts recursively.
 - **System-Wide Auditing**: Tracks all user transactions with automated warning flags highlighting suspicious items (transactions exceeding ₹1,00,000).
-- **Global Settings & Broadcaster**: Form to send broadcast banners (e.g., system updates, maintenance offers) to all active users' trays.
-- **Feedback Hub**: Star ratings reviews hub with direct admin reply comments panel.
+- **Global Settings & Broadcaster**: Form to send broadcast banners (e.g., system updates, maintenance offers) to all active users' trays (including admins for verification).
+- **Feedback Hub Responses**: Star ratings reviews hub with direct admin reply comments panel.
 - **AI & Security Logs**: Telemetry monitoring of total Gemini requests, failed login records, blocked IPs, and API response speeds.
 
 ---
@@ -42,9 +47,10 @@ Designed with a sleek glassmorphic theme supporting seamless **Light & Dark mode
 | **Styling** | Tailwind CSS v4, Framer Motion, Recharts | Glassmorphism, premium micro-animations, charts |
 | **Backend** | Node.js, Express.js | REST API routing, cron scheduling, error handlers |
 | **Database** | MongoDB Atlas / Local JSON Mock database | Dual-mode storage compatibility |
-| **AI Integration** | Gemini API (`gemini-1.5-flash`) | Natural language parsing & advisory generation |
+| **AI Integration** | Gemini API (`gemini-3.5-flash`) | Natural language parsing & advisory generation |
 | **OCR Scanner** | Tesseract.js | In-browser client-side optical character recognition |
 | **Security** | JWT, bcryptjs, Helmet, Mongo-Sanitize, CORS | Standard web security middlewares |
+| **Hosting Deployment**| Render (Backend) & Vercel (Frontend SPA) | Split hosting configuration with dynamic Axios defaults |
 
 ---
 
@@ -55,13 +61,14 @@ BudgetTracker/
 ├── client/
 │   ├── src/
 │   │   ├── components/      # Common components (Layout, PrivateRoute)
-│   │   ├── pages/           # Views (Dashboard, AdminDashboard, Settings, AIAdvisor)
+│   │   ├── pages/           # Views (Dashboard, AdminDashboard, Settings, FeedbackPage)
 │   │   ├── store/           # Redux state slices (authSlice, financeSlice)
 │   │   └── index.css        # Tailwind styling & light/dark variables
+│   ├── vercel.json          # SPA routing rewrites for Vercel
 │   └── vite.config.js       # Vite proxy & compile guidelines
 ├── server/
 │   ├── config/              # Database adapter (db.js) & seed scripts (seed.js)
-│   ├── controllers/         # REST handler controllers (auth, finance, admin)
+│   ├── controllers/         # REST handler controllers (auth, finance, admin, ai)
 │   ├── middleware/          # JWT check & admin RBAC middleware
 │   ├── models/              # Schema blueprints (models.js)
 │   └── routes/              # Express API routers (api.js, admin.js)
@@ -120,10 +127,10 @@ On system startup, the local JSON database is pre-seeded with these test credent
 
 ### 👨💼 System Administrator Account
 - **Email**: `admin@budgetwise.com`
-- **Password**: `
+- **Password**: `adminpassword`
 - *Accesses the complete System Admin Dashboard with User suspension toggles, suspicious transaction alerts, and broadcast forms.*
 
 ### 👤 Regular User Account
 - **Email**: `piyush@gmail.com`
-- **Password**: 
+- **Password**: `password123`
 - *Accesses the gamified dashboard, wallet logs, savings trackers, reports, and AI advisor.*
