@@ -77,14 +77,14 @@ export default function Login() {
     <div className="min-h-screen bg-[#020617] flex items-center justify-center p-4 relative font-sans overflow-hidden">
       
       {/* Background neon glows */}
-      <div className="absolute top-1/4 left-1/4 w-80 h-80 bg-brand-indigo/10 rounded-full filter blur-3xl" />
-      <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-brand-purple/10 rounded-full filter blur-3xl" />
+      <div className="absolute top-1/4 left-1/4 w-80 h-80 bg-blue-600/10 rounded-full filter blur-3xl" />
+      <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-sky-500/10 rounded-full filter blur-3xl" />
 
       <div className="w-full max-w-md bg-slate-950/60 border border-white/10 p-8 rounded-3xl backdrop-blur-md shadow-2xl relative z-10 space-y-6">
         
         {/* Logo */}
         <div className="flex items-center justify-center gap-3">
-          <div className="bg-gradient-to-tr from-brand-indigo to-brand-purple p-2.5 rounded-xl shadow-lg">
+          <div className="bg-blue-600 p-2.5 rounded-xl shadow-md shadow-blue-600/20">
             <Coins className="h-6 w-6 text-white" />
           </div>
           <span className="font-display font-extrabold text-2xl tracking-tight text-white">BudgetWise AI</span>
@@ -95,7 +95,7 @@ export default function Login() {
           <form onSubmit={handleLogin} className="space-y-4">
             <div className="text-center">
               <h2 className="text-lg font-bold text-white">Log in to your account</h2>
-              <p className="text-xs text-gray-500 mt-1">Enter your email and password to access dashboard</p>
+              <p className="text-xs text-gray-400 mt-1">Enter your email and password to access dashboard</p>
             </div>
 
             {error && (
@@ -109,7 +109,7 @@ export default function Login() {
               <input 
                 type="email" required placeholder="name@example.com"
                 value={email} onChange={e => setEmail(e.target.value)}
-                className="w-full bg-slate-900 border border-white/10 focus:border-brand-purple/40 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none"
+                className="w-full bg-slate-900 border border-white/10 focus:border-blue-500/40 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none"
               />
             </div>
 
@@ -119,7 +119,7 @@ export default function Login() {
                 <button 
                   type="button" 
                   onClick={() => setMode('forgot')}
-                  className="text-[10px] text-brand-purple font-bold hover:underline"
+                  className="text-[10px] text-blue-400 font-semibold hover:underline cursor-pointer"
                 >
                   Forgot password?
                 </button>
@@ -127,7 +127,7 @@ export default function Login() {
               <input 
                 type="password" required placeholder="••••••••"
                 value={password} onChange={e => setPassword(e.target.value)}
-                className="w-full bg-slate-900 border border-white/10 focus:border-brand-purple/40 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none"
+                className="w-full bg-slate-900 border border-white/10 focus:border-blue-500/40 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none"
               />
             </div>
 
@@ -135,7 +135,7 @@ export default function Login() {
               <input 
                 type="checkbox" id="remember"
                 checked={rememberMe} onChange={e => setRememberMe(e.target.checked)}
-                className="h-4 w-4 bg-slate-950 border border-white/10 rounded focus:ring-brand-purple"
+                className="h-4 w-4 bg-slate-950 border border-white/10 rounded focus:ring-blue-500"
               />
               <label htmlFor="remember" className="text-xs text-gray-400 ml-2 cursor-pointer">Remember Me (30 Days)</label>
             </div>
@@ -143,7 +143,7 @@ export default function Login() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-2.5 bg-gradient-to-r from-brand-indigo to-brand-purple hover:brightness-110 disabled:opacity-50 text-white font-extrabold text-xs rounded-xl shadow-lg transition-all flex items-center justify-center gap-1.5"
+              className="w-full py-2.5 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white font-semibold text-xs rounded-xl shadow-sm shadow-blue-600/20 transition-all flex items-center justify-center gap-1.5 cursor-pointer"
             >
               {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Log In'}
               <ArrowRight className="h-4 w-4" />
@@ -182,13 +182,13 @@ export default function Login() {
               <input 
                 type="email" required placeholder="name@example.com"
                 value={email} onChange={e => setEmail(e.target.value)}
-                className="w-full bg-slate-900 border border-white/10 focus:border-brand-purple/40 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none"
+                className="w-full bg-slate-900 border border-white/10 focus:border-blue-500/40 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none"
               />
             </div>
 
             <button
               type="submit"
-              className="w-full py-2.5 bg-gradient-to-r from-brand-indigo to-brand-purple text-white font-extrabold text-xs rounded-xl shadow-lg transition-all"
+              className="w-full py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs rounded-xl shadow-sm shadow-blue-600/20 transition-all cursor-pointer"
             >
               Request OTP Code
             </button>
@@ -196,7 +196,7 @@ export default function Login() {
             <button
               type="button"
               onClick={() => setMode('login')}
-              className="w-full py-2.5 bg-slate-900 border border-white/10 hover:bg-slate-800 text-white font-bold text-xs rounded-xl transition-all"
+              className="w-full py-2.5 bg-slate-900 border border-white/10 hover:bg-slate-800 text-white font-bold text-xs rounded-xl transition-all cursor-pointer"
             >
               Back to Login
             </button>
@@ -207,9 +207,9 @@ export default function Login() {
         {mode === 'otp' && (
           <form onSubmit={handleOtpReset} className="space-y-4">
             <div className="text-center flex flex-col items-center">
-              <KeyRound className="h-8 w-8 text-brand-purple mb-2 animate-bounce" />
+              <KeyRound className="h-8 w-8 text-blue-400 mb-2 animate-bounce" />
               <h2 className="text-lg font-bold text-white">Enter OTP Verification</h2>
-              <p className="text-xs text-gray-500 mt-1">We logged a 6-digit verification code in the server terminal.</p>
+              <p className="text-xs text-gray-400 mt-1">We logged a 6-digit verification code in the server terminal.</p>
             </div>
 
             <div>
@@ -232,7 +232,7 @@ export default function Login() {
 
             <button
               type="submit"
-              className="w-full py-2.5 bg-gradient-to-r from-brand-indigo to-brand-purple text-white font-extrabold text-xs rounded-xl shadow-lg transition-all"
+              className="w-full py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs rounded-xl shadow-sm shadow-blue-600/20 transition-all cursor-pointer"
             >
               Verify OTP & Reset
             </button>

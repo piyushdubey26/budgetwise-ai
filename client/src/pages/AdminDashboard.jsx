@@ -246,12 +246,12 @@ export default function AdminDashboard() {
       <aside className="w-64 bg-slate-950 border-r border-white/5 py-6 px-4 shrink-0 flex flex-col justify-between">
         <div>
           <div className="flex items-center gap-3 px-3 mb-8">
-            <div className="bg-brand-indigo/10 p-2.5 rounded-xl shadow-lg border border-brand-indigo/20">
-              <ShieldCheck className="h-6 w-6 text-brand-indigo" />
+            <div className="bg-red-500/10 p-2.5 rounded-xl shadow-md border border-red-500/20">
+              <ShieldCheck className="h-6 w-6 text-red-400" />
             </div>
             <div>
               <span className="font-display font-extrabold text-lg text-white">System Admin</span>
-              <span className="text-[10px] block font-semibold text-brand-purple tracking-wider uppercase">BudgetWise Console</span>
+              <span className="text-[10px] block font-semibold text-red-400 tracking-wider uppercase">BudgetWise Console</span>
             </div>
           </div>
 
@@ -274,11 +274,11 @@ export default function AdminDashboard() {
                   onClick={() => setActiveTab(tab.id)}
                   className={`flex items-center gap-3 w-full text-left px-4 py-3 rounded-xl text-sm font-medium transition-all cursor-pointer ${
                     isActive
-                      ? 'bg-brand-indigo/10 text-brand-indigo border border-brand-indigo/20'
+                      ? 'bg-red-500/10 text-red-400 border border-red-500/20 font-semibold shadow-xs'
                       : 'text-gray-400 hover:bg-slate-900/50 hover:text-white border border-transparent'
                   }`}
                 >
-                  <Icon className={`h-4.5 w-4.5 ${isActive ? 'text-brand-indigo' : 'text-gray-400'}`} />
+                  <Icon className={`h-4.5 w-4.5 ${isActive ? 'text-red-400' : 'text-gray-400'}`} />
                   {tab.name}
                 </button>
               );
@@ -289,7 +289,7 @@ export default function AdminDashboard() {
         {/* Admin profile Summary at Bottom */}
         <div className="border-t border-white/5 pt-4">
           <div className="flex items-center gap-3 px-2 mb-4">
-            <div className="h-10 w-10 rounded-full bg-gradient-to-tr from-brand-indigo to-brand-purple flex items-center justify-center font-bold text-white shadow-inner uppercase">
+            <div className="h-10 w-10 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center font-bold text-slate-200 shadow-inner uppercase">
               {user?.name?.charAt(0) || 'A'}
             </div>
             <div>
@@ -633,7 +633,7 @@ export default function AdminDashboard() {
                     </div>
                     <button 
                       type="submit"
-                      className="w-full py-2.5 bg-gradient-to-r from-brand-indigo to-brand-purple hover:brightness-110 text-white font-extrabold text-xs rounded-xl shadow-lg transition-all"
+                      className="w-full py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs rounded-xl shadow-sm shadow-blue-600/20 transition-all cursor-pointer"
                     >
                       Publish Category
                     </button>
@@ -647,7 +647,7 @@ export default function AdminDashboard() {
                     {['Food', 'Shopping', 'Travel', 'Medical', 'Education', 'Investment', 'Rent', 'Bills', 'Fuel'].map((cat) => (
                       <div key={cat} className="bg-slate-900 border border-white/5 p-4 rounded-xl flex items-center justify-between">
                         <span className="text-xs font-bold text-white">{cat}</span>
-                        <span className="h-3 w-3 rounded-full bg-brand-indigo" />
+                        <span className="h-3 w-3 rounded-full bg-blue-500" />
                       </div>
                     ))}
                   </div>
@@ -664,7 +664,7 @@ export default function AdminDashboard() {
                 className="max-w-xl glass-panel p-6 rounded-3xl"
               >
                 <h3 className="text-base font-bold text-white mb-4 flex items-center gap-1.5">
-                  <BellRing className="h-5 w-5 text-brand-purple" />
+                  <BellRing className="h-5 w-5 text-blue-400" />
                   Broadcast System Announcement
                 </h3>
                 
@@ -675,7 +675,7 @@ export default function AdminDashboard() {
                       type="text" required placeholder="eg. Scheduled Maintenance Tomorrow"
                       value={alertForm.title}
                       onChange={e => setAlertForm({ ...alertForm, title: e.target.value })}
-                      className="w-full bg-slate-950 border border-white/10 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-brand-indigo/40"
+                      className="w-full bg-slate-950 border border-white/10 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-blue-500/40"
                     />
                   </div>
 
@@ -698,13 +698,13 @@ export default function AdminDashboard() {
                       required rows="4" placeholder="Type notification contents here..."
                       value={alertForm.message}
                       onChange={e => setAlertForm({ ...alertForm, message: e.target.value })}
-                      className="w-full bg-slate-950 border border-white/10 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none resize-none focus:border-brand-indigo/40"
+                      className="w-full bg-slate-950 border border-white/10 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none resize-none focus:border-blue-500/40"
                     />
                   </div>
 
                   <button 
                     type="submit"
-                    className="w-full py-2.5 bg-gradient-to-r from-brand-indigo to-brand-purple hover:brightness-110 text-white font-extrabold text-xs rounded-xl shadow-lg transition-all cursor-pointer"
+                    className="w-full py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs rounded-xl shadow-sm shadow-blue-600/20 transition-all cursor-pointer"
                   >
                     Broadcast to All User Inboxes
                   </button>
@@ -881,7 +881,7 @@ export default function AdminDashboard() {
 
                   <button 
                     type="submit"
-                    className="py-2.5 bg-gradient-to-r from-brand-indigo to-brand-purple text-white font-extrabold text-xs px-6 rounded-xl shadow-lg transition-all ml-auto block"
+                    className="py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs px-6 rounded-xl shadow-sm shadow-blue-600/20 transition-all ml-auto block cursor-pointer"
                   >
                     Save System Variables
                   </button>

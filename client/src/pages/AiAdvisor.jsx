@@ -49,7 +49,7 @@ export default function AiAdvisor() {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h1 className="page-title flex items-center gap-2">
-            <Sparkles className="h-7 w-7 text-brand-purple animate-pulse" />
+            <Sparkles className="h-7 w-7 text-blue-400 animate-pulse" />
             AI Financial Advisor
           </h1>
           <p className="text-gray-400 text-sm mt-1">
@@ -60,7 +60,7 @@ export default function AiAdvisor() {
         <button 
           onClick={fetchAdvisorFeedback}
           disabled={loading}
-          className="flex items-center gap-2 bg-gradient-to-r from-brand-indigo to-brand-purple hover:brightness-110 disabled:opacity-50 px-4.5 py-2.5 rounded-xl font-semibold text-sm text-white shadow shadow-brand-indigo/10 transition-all"
+          className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 px-4.5 py-2.5 rounded-xl font-semibold text-sm text-white shadow-sm shadow-blue-600/20 transition-all cursor-pointer"
         >
           {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
           Re-Analyze Spending
@@ -71,7 +71,7 @@ export default function AiAdvisor() {
         <div className="flex flex-col items-center justify-center py-20 space-y-4">
           <div className="relative h-16 w-16">
             <div className="absolute inset-0 rounded-full border-4 border-slate-800" />
-            <div className="absolute inset-0 rounded-full border-4 border-t-brand-purple animate-spin" />
+            <div className="absolute inset-0 rounded-full border-4 border-t-blue-500 animate-spin" />
           </div>
           <p className="text-sm font-medium text-gray-400">Gemini is processing your transaction history...</p>
         </div>
@@ -90,7 +90,7 @@ export default function AiAdvisor() {
                   <circle cx="50" cy="50" r="40" stroke="rgba(255,255,255,0.03)" strokeWidth="8" fill="transparent" />
                   <circle 
                     cx="50" cy="50" r="40" 
-                    stroke="url(#purpleGradient)" 
+                    stroke="url(#blueGradient)" 
                     strokeWidth="8" 
                     fill="transparent" 
                     strokeDasharray="251.2"
@@ -98,9 +98,9 @@ export default function AiAdvisor() {
                     strokeLinecap="round"
                   />
                   <defs>
-                    <linearGradient id="purpleGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stopColor="#4f46e5" />
-                      <stop offset="100%" stopColor="#7c3aed" />
+                    <linearGradient id="blueGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="#2563eb" />
+                      <stop offset="100%" stopColor="#3b82f6" />
                     </linearGradient>
                   </defs>
                 </svg>
@@ -118,7 +118,7 @@ export default function AiAdvisor() {
             {/* Analysis card */}
             <div className="glass-panel p-6 rounded-3xl space-y-3">
               <h3 className="text-sm font-bold text-white flex items-center gap-1.5 border-b border-white/5 pb-2.5">
-                <AlertTriangle className="h-4 w-4 text-brand-purple" />
+                <AlertTriangle className="h-4 w-4 text-blue-400" />
                 Advisor Audit Analysis
               </h3>
               <p className="text-xs text-gray-300 leading-relaxed font-medium">
@@ -182,7 +182,7 @@ export default function AiAdvisor() {
                 <ul className="space-y-3">
                   {advisorData.generalTips?.map((tip, i) => (
                     <li key={i} className="flex items-start gap-2.5 text-xs text-gray-300">
-                      <CheckCircle className="h-4 w-4 text-brand-purple shrink-0 mt-0.5" />
+                      <CheckCircle className="h-4 w-4 text-emerald-400 shrink-0 mt-0.5" />
                       <span className="leading-relaxed">{tip}</span>
                     </li>
                   ))}
@@ -197,19 +197,19 @@ export default function AiAdvisor() {
 
       {/* Premium wall for AI Advisor suggestions (Mock Check for UI completeness) */}
       {!user?.isPremium && (
-        <div className="bg-gradient-to-r from-brand-indigo/10 to-brand-purple/10 border border-brand-purple/20 p-6 rounded-3xl flex flex-col md:flex-row items-center justify-between gap-4">
+        <div className="bg-blue-600/10 border border-blue-500/20 p-6 rounded-3xl flex flex-col md:flex-row items-center justify-between gap-4">
           <div>
             <h4 className="text-sm font-bold text-white flex items-center gap-1.5">
-              <ShieldAlert className="h-4.5 w-4.5 text-brand-purple" />
+              <ShieldAlert className="h-4.5 w-4.5 text-blue-400" />
               Unlock High Precision Advisor Insights
             </h4>
             <p className="text-[11px] text-gray-400 mt-1 leading-normal max-w-xl">
-              Free accounts use generic spending templates. Upgrade to Premium for direct Gemini 1.5 Pro personalized recommendations tailored to your investments, EMIs, and local goals timeline.
+              Free accounts use generic spending templates. Upgrade to Premium for direct Gemini 3.5 Flash personalized recommendations tailored to your investments, EMIs, and local goals timeline.
             </p>
           </div>
           <button 
             onClick={() => navigate('/settings')}
-            className="bg-gradient-to-r from-brand-indigo to-brand-purple px-4.5 py-2.5 rounded-xl font-bold text-xs text-white shadow shadow-brand-indigo/10 hover:brightness-110 whitespace-nowrap"
+            className="bg-blue-600 hover:bg-blue-500 px-4.5 py-2.5 rounded-xl font-semibold text-xs text-white shadow-sm shadow-blue-600/20 transition-all whitespace-nowrap cursor-pointer"
           >
             Upgrade to Pro
           </button>

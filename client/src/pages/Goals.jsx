@@ -141,7 +141,7 @@ export default function Goals({ refresh }) {
         
         <button 
           onClick={() => setShowAddGoal(true)}
-          className="flex items-center gap-2 bg-gradient-to-r from-brand-indigo to-brand-purple hover:brightness-110 px-4 py-2.5 rounded-xl font-semibold text-sm text-white shadow shadow-brand-indigo/15 transition-all"
+          className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 px-4 py-2.5 rounded-xl font-semibold text-sm text-white shadow-sm shadow-blue-600/20 transition-all cursor-pointer"
         >
           <Plus className="h-4 w-4" />
           Create Savings Goal
@@ -165,7 +165,7 @@ export default function Goals({ refresh }) {
                 const percent = Math.min(100, Math.round((g.currentAmount / g.targetAmount) * 100));
                 const isCompleted = g.status === 'completed';
                 return (
-                  <div key={g._id} className="glass-panel p-6 rounded-2xl flex flex-col justify-between h-48 border-t-2 border-brand-indigo">
+                  <div key={g._id} className="glass-panel p-6 rounded-2xl flex flex-col justify-between h-48 border-t-2 border-blue-500">
                     <div>
                       <div className="flex justify-between items-start">
                         <div>
@@ -178,7 +178,7 @@ export default function Goals({ refresh }) {
                               <CheckCircle className="h-3 w-3" /> Completed
                             </span>
                           ) : (
-                            <span className="text-xs font-extrabold text-brand-purple">{percent}%</span>
+                            <span className="text-xs font-bold text-blue-400">{percent}%</span>
                           )}
                           <button
                             onClick={() => handleDeleteGoal(g._id)}
@@ -195,7 +195,7 @@ export default function Goals({ refresh }) {
                     <div className="my-4">
                       <div className="w-full h-2 bg-slate-800 rounded-full overflow-hidden mb-2">
                         <div 
-                          className={`h-full ${isCompleted ? 'bg-emerald-400' : 'bg-brand-purple'}`} 
+                          className={`h-full ${isCompleted ? 'bg-emerald-400' : 'bg-blue-500'}`} 
                           style={{ width: `${percent}%` }} 
                         />
                       </div>
@@ -211,7 +211,7 @@ export default function Goals({ refresh }) {
                           setSelectedGoal(g);
                           setShowDeposit(true);
                         }}
-                        className="w-full py-1.5 bg-slate-900 border border-white/10 hover:bg-slate-800 text-white font-bold text-xs rounded-lg transition-all"
+                        className="w-full py-1.5 bg-slate-900 border border-white/10 hover:bg-slate-800 text-white font-semibold text-xs rounded-lg transition-all cursor-pointer"
                       >
                         Deposit Savings
                       </button>
@@ -231,14 +231,14 @@ export default function Goals({ refresh }) {
             
             {/* User Badge Status */}
             <div className="flex items-center gap-4 bg-slate-950/60 p-4 rounded-2xl border border-white/5 shadow-inner">
-              <div className="h-12 w-12 rounded-xl bg-gradient-to-tr from-brand-indigo to-brand-purple flex items-center justify-center font-bold text-white text-lg shadow shadow-brand-indigo/15">
+              <div className="h-12 w-12 rounded-xl bg-blue-600 flex items-center justify-center font-bold text-white text-lg shadow-sm shadow-blue-600/20">
                 {user?.level || 1}
               </div>
               <div className="flex-1">
                 <span className="text-xs font-bold text-gray-300 block">Finance Level {user?.level || 1}</span>
                 <span className="text-[10px] text-gray-500">XP: {user?.xp || 0} / {(user?.level || 1) * 100}</span>
                 <div className="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden mt-1">
-                  <div className="h-full bg-brand-purple" style={{ width: `${(user?.xp || 0) % 100}%` }} />
+                  <div className="h-full bg-blue-500" style={{ width: `${(user?.xp || 0) % 100}%` }} />
                 </div>
               </div>
             </div>
@@ -360,7 +360,7 @@ export default function Goals({ refresh }) {
                 <button 
                   type="submit"
                   disabled={isCreatingGoal}
-                  className={`w-full py-2.5 bg-gradient-to-r from-brand-indigo to-brand-purple hover:brightness-110 text-white font-bold text-xs rounded-xl shadow-lg transition-all cursor-pointer ${
+                  className={`w-full py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs rounded-xl shadow-sm shadow-blue-600/20 transition-all cursor-pointer ${
                     isCreatingGoal ? 'opacity-50 cursor-not-allowed' : ''
                   }`}
                 >
@@ -416,7 +416,7 @@ export default function Goals({ refresh }) {
                 <button 
                   type="submit"
                   disabled={isDepositing}
-                  className={`w-full py-2.5 bg-gradient-to-r from-brand-indigo to-brand-purple hover:brightness-110 text-white font-bold text-xs rounded-xl shadow-lg transition-all cursor-pointer ${
+                  className={`w-full py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs rounded-xl shadow-sm shadow-blue-600/20 transition-all cursor-pointer ${
                     isDepositing ? 'opacity-50 cursor-not-allowed' : ''
                   }`}
                 >

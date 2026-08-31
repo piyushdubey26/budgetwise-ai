@@ -30,14 +30,14 @@ export default function Signup() {
     <div className="min-h-screen bg-[#020617] flex items-center justify-center p-4 relative font-sans overflow-hidden">
       
       {/* Background neon glows */}
-      <div className="absolute top-1/4 left-1/4 w-80 h-80 bg-brand-indigo/10 rounded-full filter blur-3xl" />
-      <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-brand-purple/10 rounded-full filter blur-3xl" />
+      <div className="absolute top-1/4 left-1/4 w-80 h-80 bg-blue-600/10 rounded-full filter blur-3xl" />
+      <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-sky-500/10 rounded-full filter blur-3xl" />
 
       <div className="w-full max-w-md bg-slate-950/60 border border-white/10 p-8 rounded-3xl backdrop-blur-md shadow-2xl relative z-10 space-y-6">
         
         {/* Logo */}
         <div className="flex items-center justify-center gap-3">
-          <div className="bg-gradient-to-tr from-brand-indigo to-brand-purple p-2.5 rounded-xl shadow-lg">
+          <div className="bg-blue-600 p-2.5 rounded-xl shadow-md shadow-blue-600/20">
             <Coins className="h-6 w-6 text-white" />
           </div>
           <span className="font-display font-extrabold text-2xl tracking-tight text-white">BudgetWise AI</span>
@@ -46,7 +46,7 @@ export default function Signup() {
         <form onSubmit={handleSignup} className="space-y-4">
           <div className="text-center">
             <h2 className="text-lg font-bold text-white">Create a new account</h2>
-            <p className="text-xs text-gray-500 mt-1">Start tracking budgets, scan receipts, and get AI reviews</p>
+            <p className="text-xs text-gray-400 mt-1">Start tracking budgets, scan receipts, and get AI reviews</p>
           </div>
 
           {error && (
@@ -60,7 +60,7 @@ export default function Signup() {
             <input 
               type="text" required placeholder="Enter your name"
               value={name} onChange={e => setName(e.target.value)}
-              className="w-full bg-slate-900 border border-white/10 focus:border-brand-purple/40 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none"
+              className="w-full bg-slate-900 border border-white/10 focus:border-blue-500/40 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none"
             />
           </div>
 
@@ -69,7 +69,7 @@ export default function Signup() {
             <input 
               type="email" required placeholder="name@example.com"
               value={email} onChange={e => setEmail(e.target.value)}
-              className="w-full bg-slate-900 border border-white/10 focus:border-brand-purple/40 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none"
+              className="w-full bg-slate-900 border border-white/10 focus:border-blue-500/40 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none"
             />
           </div>
 
@@ -78,21 +78,21 @@ export default function Signup() {
             <input 
               type="password" required placeholder="••••••••"
               value={password} onChange={e => setPassword(e.target.value)}
-              className="w-full bg-slate-900 border border-white/10 focus:border-brand-purple/40 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none"
+              className="w-full bg-slate-900 border border-white/10 focus:border-blue-500/40 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none"
             />
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-2.5 bg-gradient-to-r from-brand-indigo to-brand-purple hover:brightness-110 disabled:opacity-50 text-white font-extrabold text-xs rounded-xl shadow-lg transition-all flex items-center justify-center gap-1.5"
+            className="w-full py-2.5 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white font-semibold text-xs rounded-xl shadow-sm shadow-blue-600/20 transition-all flex items-center justify-center gap-1.5 cursor-pointer"
           >
             {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Sign Up'}
             <ArrowRight className="h-4 w-4" />
           </button>
 
-          <span className="text-xs text-gray-500 text-center block pt-4">
-            Already have an account? <Link to="/login" className="text-brand-purple font-bold hover:underline">Log in</Link>
+          <span className="text-xs text-gray-400 text-center block pt-4">
+            Already have an account? <Link to="/login" className="text-blue-400 font-semibold hover:underline">Log in</Link>
           </span>
         </form>
 

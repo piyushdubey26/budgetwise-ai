@@ -317,19 +317,19 @@ export default function Transactions({ refresh }) {
         <div className="flex gap-2 p-1 bg-slate-950/80 rounded-xl border border-white/5 shadow-inner">
           <button 
             onClick={() => setActiveTab('list')}
-            className={`px-4 py-2 text-xs font-bold rounded-lg transition-all ${activeTab === 'list' ? 'bg-gradient-to-r from-brand-indigo to-brand-purple text-white shadow' : 'text-gray-400 hover:text-white'}`}
+            className={`px-4 py-2 text-xs font-semibold rounded-lg transition-all cursor-pointer ${activeTab === 'list' ? 'bg-blue-600 text-white shadow-sm' : 'text-gray-400 hover:text-white'}`}
           >
             All Transactions
           </button>
           <button 
             onClick={() => setActiveTab('wallets')}
-            className={`px-4 py-2 text-xs font-bold rounded-lg transition-all ${activeTab === 'wallets' ? 'bg-gradient-to-r from-brand-indigo to-brand-purple text-white shadow' : 'text-gray-400 hover:text-white'}`}
+            className={`px-4 py-2 text-xs font-semibold rounded-lg transition-all cursor-pointer ${activeTab === 'wallets' ? 'bg-blue-600 text-white shadow-sm' : 'text-gray-400 hover:text-white'}`}
           >
             Wallets & Transfers
           </button>
           <button 
             onClick={() => setActiveTab('budgets')}
-            className={`px-4 py-2 text-xs font-bold rounded-lg transition-all ${activeTab === 'budgets' ? 'bg-gradient-to-r from-brand-indigo to-brand-purple text-white shadow' : 'text-gray-400 hover:text-white'}`}
+            className={`px-4 py-2 text-xs font-semibold rounded-lg transition-all cursor-pointer ${activeTab === 'budgets' ? 'bg-blue-600 text-white shadow-sm' : 'text-gray-400 hover:text-white'}`}
           >
             Budgets
           </button>
@@ -340,18 +340,18 @@ export default function Transactions({ refresh }) {
             <>
               <button 
                 onClick={() => setShowImport(true)} 
-                className="flex items-center gap-1.5 bg-slate-900 border border-white/10 hover:bg-slate-800 text-xs font-bold px-3.5 py-2 rounded-xl text-white transition-all"
+                className="flex items-center gap-1.5 bg-slate-900 border border-white/10 hover:bg-slate-800 text-xs font-semibold px-3.5 py-2 rounded-xl text-white transition-all cursor-pointer"
               >
                 <Upload className="h-3.5 w-3.5" /> Import CSV
               </button>
               <div className="relative group">
-                <button className="flex items-center gap-1.5 bg-slate-900 border border-white/10 hover:bg-slate-800 text-xs font-bold px-3.5 py-2 rounded-xl text-white transition-all">
+                <button className="flex items-center gap-1.5 bg-slate-900 border border-white/10 hover:bg-slate-800 text-xs font-semibold px-3.5 py-2 rounded-xl text-white transition-all cursor-pointer">
                   <Download className="h-3.5 w-3.5" /> Export Reports
                 </button>
                 <div className="absolute right-0 mt-1 w-36 bg-slate-900 border border-white/10 rounded-xl shadow-xl hidden group-hover:block overflow-hidden z-20">
-                  <button onClick={() => handleExport('pdf')} className="flex items-center gap-2 w-full text-left px-4 py-2.5 text-xs text-gray-300 hover:bg-slate-800 hover:text-white"><FileText className="h-3.5 w-3.5 text-rose-400" /> PDF Report</button>
-                  <button onClick={() => handleExport('excel')} className="flex items-center gap-2 w-full text-left px-4 py-2.5 text-xs text-gray-300 hover:bg-slate-800 hover:text-white"><FileSpreadsheet className="h-3.5 w-3.5 text-emerald-400" /> Excel Sheet</button>
-                  <button onClick={() => handleExport('csv')} className="flex items-center gap-2 w-full text-left px-4 py-2.5 text-xs text-gray-300 hover:bg-slate-800 hover:text-white"><Upload className="h-3.5 w-3.5 text-blue-400" /> CSV File</button>
+                  <button onClick={() => handleExport('pdf')} className="flex items-center gap-2 w-full text-left px-4 py-2.5 text-xs text-gray-300 hover:bg-slate-800 hover:text-white cursor-pointer"><FileText className="h-3.5 w-3.5 text-rose-400" /> PDF Report</button>
+                  <button onClick={() => handleExport('excel')} className="flex items-center gap-2 w-full text-left px-4 py-2.5 text-xs text-gray-300 hover:bg-slate-800 hover:text-white cursor-pointer"><FileSpreadsheet className="h-3.5 w-3.5 text-emerald-400" /> Excel Sheet</button>
+                  <button onClick={() => handleExport('csv')} className="flex items-center gap-2 w-full text-left px-4 py-2.5 text-xs text-gray-300 hover:bg-slate-800 hover:text-white cursor-pointer"><Upload className="h-3.5 w-3.5 text-blue-400" /> CSV File</button>
                 </div>
               </div>
             </>
@@ -360,7 +360,7 @@ export default function Transactions({ refresh }) {
           {activeTab === 'wallets' && (
             <button 
               onClick={() => setShowAddWallet(true)} 
-              className="flex items-center gap-1.5 bg-gradient-to-r from-brand-indigo to-brand-purple text-xs font-bold px-3.5 py-2 rounded-xl text-white shadow shadow-brand-indigo/10 hover:brightness-110"
+              className="flex items-center gap-1.5 bg-blue-600 hover:bg-blue-500 text-xs font-semibold px-3.5 py-2 rounded-xl text-white shadow-sm shadow-blue-600/20 transition-all cursor-pointer"
             >
               <Plus className="h-3.5 w-3.5" /> New Wallet
             </button>
@@ -369,7 +369,7 @@ export default function Transactions({ refresh }) {
           {activeTab === 'budgets' && (
             <button 
               onClick={() => setShowSetBudget(true)} 
-              className="flex items-center gap-1.5 bg-gradient-to-r from-brand-indigo to-brand-purple text-xs font-bold px-3.5 py-2 rounded-xl text-white shadow shadow-brand-indigo/10 hover:brightness-110"
+              className="flex items-center gap-1.5 bg-blue-600 hover:bg-blue-500 text-xs font-semibold px-3.5 py-2 rounded-xl text-white shadow-sm shadow-blue-600/20 transition-all cursor-pointer"
             >
               <Settings className="h-3.5 w-3.5" /> Set Budget
             </button>
@@ -378,7 +378,7 @@ export default function Transactions({ refresh }) {
           {activeTab === 'list' && (
             <button 
               onClick={() => setShowAddTx(true)} 
-              className="flex items-center gap-1.5 bg-gradient-to-r from-brand-indigo to-brand-purple text-xs font-bold px-3.5 py-2 rounded-xl text-white shadow shadow-brand-indigo/10 hover:brightness-110"
+              className="flex items-center gap-1.5 bg-blue-600 hover:bg-blue-500 text-xs font-semibold px-3.5 py-2 rounded-xl text-white shadow-sm shadow-blue-600/20 transition-all cursor-pointer"
             >
               <Plus className="h-3.5 w-3.5" /> Add Transaction
             </button>
@@ -675,7 +675,7 @@ export default function Transactions({ refresh }) {
                     </div>
                   </div>
                 ) : (
-                  <div key={w._id} className="glass-panel p-6 rounded-2xl flex items-center justify-between border-l-4 border-brand-purple group relative overflow-hidden transition-all hover:bg-slate-900/10">
+                  <div key={w._id} className="glass-panel p-6 rounded-2xl flex items-center justify-between border-l-4 border-blue-500 group relative overflow-hidden transition-all hover:bg-slate-900/10">
                     <div>
                       <span className="text-sm font-bold text-white block">{w.name}</span>
                       <span className="text-[10px] text-gray-400 uppercase tracking-wider">{w.type}</span>
@@ -689,14 +689,14 @@ export default function Transactions({ refresh }) {
                       <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity pl-2 border-l border-white/5 bg-slate-950/40 p-1 rounded-lg backdrop-blur-sm">
                         <button 
                           onClick={() => startEditWallet(w)}
-                          className="p-1.5 text-brand-purple hover:bg-brand-purple/10 rounded-md transition-all"
+                          className="p-1.5 text-blue-400 hover:bg-blue-500/10 rounded-md transition-all cursor-pointer"
                           title="Edit Wallet"
                         >
                           <Edit className="h-3.5 w-3.5" />
                         </button>
                         <button 
                           onClick={() => handleDeleteWallet(w._id)}
-                          className="p-1.5 text-rose-400 hover:bg-rose-500/15 rounded-md transition-all"
+                          className="p-1.5 text-rose-400 hover:bg-rose-500/15 rounded-md transition-all cursor-pointer"
                           title="Delete Wallet"
                         >
                           <Trash2 className="h-3.5 w-3.5" />
@@ -712,7 +712,7 @@ export default function Transactions({ refresh }) {
           {/* Quick Transfer funds widget */}
           <div className="glass-panel p-6 rounded-3xl h-fit">
             <h3 className="text-base font-bold text-white flex items-center gap-1.5 mb-4">
-              <ArrowRightLeft className="h-4 w-4 text-brand-purple" />
+              <ArrowRightLeft className="h-4 w-4 text-blue-400" />
               Transfer Funds
             </h3>
             <form onSubmit={handleTransfer} className="space-y-4">
@@ -750,14 +750,14 @@ export default function Transactions({ refresh }) {
                   placeholder="0"
                   value={transferForm.amount}
                   onChange={e => setTransferForm({ ...transferForm, amount: e.target.value })}
-                  className="w-full bg-slate-950 border border-white/10 focus:border-brand-purple/40 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none"
+                  className="w-full bg-slate-950 border border-white/10 focus:border-blue-500/40 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none"
                 />
               </div>
 
               <button 
                 type="submit"
                 disabled={isTransferring}
-                className={`w-full py-2.5 bg-gradient-to-r from-brand-indigo to-brand-purple hover:brightness-110 text-white font-bold text-xs rounded-xl shadow-lg transition-all cursor-pointer ${
+                className={`w-full py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs rounded-xl shadow-sm shadow-blue-600/20 transition-all cursor-pointer ${
                   isTransferring ? 'opacity-50 cursor-not-allowed' : ''
                 }`}
               >
@@ -965,7 +965,7 @@ export default function Transactions({ refresh }) {
                 <button 
                   type="submit"
                   disabled={isAddingTx}
-                  className={`w-full py-2.5 bg-gradient-to-r from-brand-indigo to-brand-purple hover:brightness-110 text-white font-bold text-xs rounded-xl shadow-lg transition-all mt-4 cursor-pointer ${
+                  className={`w-full py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs rounded-xl shadow-sm shadow-blue-600/20 transition-all mt-4 cursor-pointer ${
                     isAddingTx ? 'opacity-50 cursor-not-allowed' : ''
                   }`}
                 >
@@ -1035,7 +1035,7 @@ export default function Transactions({ refresh }) {
                 <button 
                   type="submit"
                   disabled={isAddingWallet}
-                  className={`w-full py-2.5 bg-gradient-to-r from-brand-indigo to-brand-purple hover:brightness-110 text-white font-bold text-xs rounded-xl shadow-lg transition-all cursor-pointer ${
+                  className={`w-full py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs rounded-xl shadow-sm shadow-blue-600/20 transition-all cursor-pointer ${
                     isAddingWallet ? 'opacity-50 cursor-not-allowed' : ''
                   }`}
                 >
@@ -1106,7 +1106,7 @@ export default function Transactions({ refresh }) {
                 <button 
                   type="submit"
                   disabled={isSettingBudget}
-                  className={`w-full py-2.5 bg-gradient-to-r from-brand-indigo to-brand-purple hover:brightness-110 text-white font-bold text-xs rounded-xl shadow-lg transition-all cursor-pointer ${
+                  className={`w-full py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs rounded-xl shadow-sm shadow-blue-600/20 transition-all cursor-pointer ${
                     isSettingBudget ? 'opacity-50 cursor-not-allowed' : ''
                   }`}
                 >
@@ -1134,7 +1134,7 @@ export default function Transactions({ refresh }) {
               </div>
 
               <form onSubmit={handleImport} className="p-6 space-y-4">
-                <div className="border-2 border-dashed border-white/10 hover:border-brand-purple/40 rounded-xl p-6 text-center cursor-pointer relative transition-all">
+                <div className="border-2 border-dashed border-white/10 hover:border-blue-500/40 rounded-xl p-6 text-center cursor-pointer relative transition-all">
                   <input 
                     type="file" accept=".csv" required
                     onChange={e => setImportFile(e.target.files[0])}
@@ -1150,7 +1150,7 @@ export default function Transactions({ refresh }) {
                 <button 
                   type="submit"
                   disabled={!importFile || isImporting}
-                  className={`w-full py-2.5 bg-gradient-to-r from-brand-indigo to-brand-purple hover:brightness-110 disabled:opacity-50 text-white font-bold text-xs rounded-xl shadow-lg transition-all cursor-pointer ${
+                  className={`w-full py-2.5 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white font-semibold text-xs rounded-xl shadow-sm shadow-blue-600/20 transition-all cursor-pointer ${
                     isImporting ? 'opacity-50 cursor-not-allowed' : ''
                   }`}
                 >

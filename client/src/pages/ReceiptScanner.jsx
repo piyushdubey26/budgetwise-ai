@@ -149,7 +149,7 @@ export default function ReceiptScanner({ refresh }) {
           {file && !scanning && !scannedData && (
             <button
               onClick={handleScan}
-              className="w-full py-2.5 bg-gradient-to-r from-brand-indigo to-brand-purple hover:brightness-110 text-white font-bold text-xs rounded-xl shadow-lg transition-all flex items-center justify-center gap-1.5"
+              className="w-full py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs rounded-xl shadow-sm shadow-blue-600/20 transition-all flex items-center justify-center gap-1.5 cursor-pointer"
             >
               <Sparkles className="h-4 w-4" />
               Perform OCR Scan
@@ -158,20 +158,20 @@ export default function ReceiptScanner({ refresh }) {
 
           {scanning && (
             <div className="space-y-4">
-              {/* Neon glow scan effect */}
+              {/* Precision scan effect */}
               <div className="relative h-60 w-full overflow-hidden rounded-xl bg-slate-950 border border-white/5 flex items-center justify-center">
                 {imagePreview && (
                   <img src={imagePreview} alt="Scanning" className="h-full w-full object-contain opacity-50" />
                 )}
-                {/* Neon line scan animation */}
+                {/* Precision scan line */}
                 <motion.div 
                   initial={{ top: '0%' }}
                   animate={{ top: '100%' }}
                   transition={{ repeat: Infinity, duration: 2, ease: 'linear' }}
-                  className="absolute left-0 right-0 h-1 bg-gradient-to-r from-brand-indigo via-brand-purple to-brand-rose shadow-[0_0_10px_#7c3aed]"
+                  className="absolute left-0 right-0 h-0.5 bg-gradient-to-r from-blue-600 via-sky-400 to-blue-600 shadow-[0_0_10px_#2563eb]"
                 />
                 <div className="absolute flex items-center gap-2 bg-slate-900/80 border border-white/10 px-4 py-2 rounded-xl">
-                  <Loader2 className="h-4 w-4 animate-spin text-brand-purple" />
+                  <Loader2 className="h-4 w-4 animate-spin text-blue-400" />
                   <span className="text-xs font-bold text-white">Extracting text fields...</span>
                 </div>
               </div>
@@ -268,7 +268,7 @@ export default function ReceiptScanner({ refresh }) {
 
               <button 
                 type="submit"
-                className="w-full py-2.5 bg-gradient-to-r from-brand-indigo to-brand-purple hover:brightness-110 text-white font-bold text-xs rounded-xl shadow-lg transition-all flex items-center justify-center gap-1.5"
+                className="w-full py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs rounded-xl shadow-sm shadow-blue-600/20 transition-all flex items-center justify-center gap-1.5 cursor-pointer"
               >
                 Approve & Log Transaction <ArrowRight className="h-3.5 w-3.5" />
               </button>

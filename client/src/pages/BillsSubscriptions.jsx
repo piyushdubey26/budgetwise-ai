@@ -116,25 +116,25 @@ export default function BillsSubscriptions({ refresh }) {
         <div className="flex gap-2 p-1 bg-slate-950/80 rounded-xl border border-white/5 shadow-inner">
           <button 
             onClick={() => setActiveTab('subs')}
-            className={`px-4 py-2 text-xs font-bold rounded-lg transition-all ${activeTab === 'subs' ? 'bg-gradient-to-r from-brand-indigo to-brand-purple text-white shadow' : 'text-gray-400 hover:text-white'}`}
+            className={`px-4 py-2 text-xs font-semibold rounded-lg transition-all cursor-pointer ${activeTab === 'subs' ? 'bg-blue-600 text-white shadow-sm' : 'text-gray-400 hover:text-white'}`}
           >
             Subscriptions
           </button>
           <button 
             onClick={() => setActiveTab('bills')}
-            className={`px-4 py-2 text-xs font-bold rounded-lg transition-all ${activeTab === 'bills' ? 'bg-gradient-to-r from-brand-indigo to-brand-purple text-white shadow' : 'text-gray-400 hover:text-white'}`}
+            className={`px-4 py-2 text-xs font-semibold rounded-lg transition-all cursor-pointer ${activeTab === 'bills' ? 'bg-blue-600 text-white shadow-sm' : 'text-gray-400 hover:text-white'}`}
           >
             Utility Bills
           </button>
           <button 
             onClick={() => setActiveTab('emis')}
-            className={`px-4 py-2 text-xs font-bold rounded-lg transition-all ${activeTab === 'emis' ? 'bg-gradient-to-r from-brand-indigo to-brand-purple text-white shadow' : 'text-gray-400 hover:text-white'}`}
+            className={`px-4 py-2 text-xs font-semibold rounded-lg transition-all cursor-pointer ${activeTab === 'emis' ? 'bg-blue-600 text-white shadow-sm' : 'text-gray-400 hover:text-white'}`}
           >
             EMIs
           </button>
           <button 
             onClick={() => setActiveTab('debts')}
-            className={`px-4 py-2 text-xs font-bold rounded-lg transition-all ${activeTab === 'debts' ? 'bg-gradient-to-r from-brand-indigo to-brand-purple text-white shadow' : 'text-gray-400 hover:text-white'}`}
+            className={`px-4 py-2 text-xs font-semibold rounded-lg transition-all cursor-pointer ${activeTab === 'debts' ? 'bg-blue-600 text-white shadow-sm' : 'text-gray-400 hover:text-white'}`}
           >
             Debts (Borrow/Lend)
           </button>
@@ -144,7 +144,7 @@ export default function BillsSubscriptions({ refresh }) {
           {activeTab === 'subs' && (
             <button 
               onClick={() => setShowAddSub(true)} 
-              className="flex items-center gap-1.5 bg-gradient-to-r from-brand-indigo to-brand-purple text-xs font-bold px-3.5 py-2 rounded-xl text-white hover:brightness-110"
+              className="flex items-center gap-1.5 bg-blue-600 hover:bg-blue-500 text-xs font-semibold px-3.5 py-2 rounded-xl text-white shadow-sm shadow-blue-600/20 transition-all cursor-pointer"
             >
               <Plus className="h-3.5 w-3.5" /> Add Subscription
             </button>
@@ -153,7 +153,7 @@ export default function BillsSubscriptions({ refresh }) {
           {activeTab === 'bills' && (
             <button 
               onClick={() => setShowAddBill(true)} 
-              className="flex items-center gap-1.5 bg-gradient-to-r from-brand-indigo to-brand-purple text-xs font-bold px-3.5 py-2 rounded-xl text-white hover:brightness-110"
+              className="flex items-center gap-1.5 bg-blue-600 hover:bg-blue-500 text-xs font-semibold px-3.5 py-2 rounded-xl text-white shadow-sm shadow-blue-600/20 transition-all cursor-pointer"
             >
               <Plus className="h-3.5 w-3.5" /> Add Bill
             </button>
@@ -162,7 +162,7 @@ export default function BillsSubscriptions({ refresh }) {
           {activeTab === 'emis' && (
             <button 
               onClick={() => setShowAddEmi(true)} 
-              className="flex items-center gap-1.5 bg-gradient-to-r from-brand-indigo to-brand-purple text-xs font-bold px-3.5 py-2 rounded-xl text-white hover:brightness-110"
+              className="flex items-center gap-1.5 bg-blue-600 hover:bg-blue-500 text-xs font-semibold px-3.5 py-2 rounded-xl text-white shadow-sm shadow-blue-600/20 transition-all cursor-pointer"
             >
               <Plus className="h-3.5 w-3.5" /> Add EMI
             </button>
@@ -171,7 +171,7 @@ export default function BillsSubscriptions({ refresh }) {
           {activeTab === 'debts' && (
             <button 
               onClick={() => setShowAddDebt(true)} 
-              className="flex items-center gap-1.5 bg-gradient-to-r from-brand-indigo to-brand-purple text-xs font-bold px-3.5 py-2 rounded-xl text-white hover:brightness-110"
+              className="flex items-center gap-1.5 bg-blue-600 hover:bg-blue-500 text-xs font-semibold px-3.5 py-2 rounded-xl text-white shadow-sm shadow-blue-600/20 transition-all cursor-pointer"
             >
               <UserPlus className="h-3.5 w-3.5" /> Add Debt Log
             </button>
@@ -384,7 +384,7 @@ export default function BillsSubscriptions({ refresh }) {
 
                 <button 
                   type="submit"
-                  className="w-full py-2.5 bg-gradient-to-r from-brand-indigo to-brand-purple hover:brightness-110 text-white font-bold text-xs rounded-xl shadow-lg transition-all"
+                  className="w-full py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs rounded-xl shadow-sm shadow-blue-600/20 transition-all cursor-pointer"
                 >
                   Confirm & Deduct Balance
                 </button>
@@ -451,7 +451,7 @@ export default function BillsSubscriptions({ refresh }) {
 
                 <button 
                   type="submit"
-                  className="w-full py-2.5 bg-gradient-to-r from-brand-indigo to-brand-purple hover:brightness-110 text-white font-bold text-xs rounded-xl shadow-lg transition-all"
+                  className="w-full py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs rounded-xl shadow-sm shadow-blue-600/20 transition-all cursor-pointer"
                 >
                   Create Auto-Billing
                 </button>
@@ -507,7 +507,7 @@ export default function BillsSubscriptions({ refresh }) {
 
                 <button 
                   type="submit"
-                  className="w-full py-2.5 bg-gradient-to-r from-brand-indigo to-brand-purple hover:brightness-110 text-white font-bold text-xs rounded-xl shadow-lg transition-all"
+                  className="w-full py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs rounded-xl shadow-sm shadow-blue-600/20 transition-all cursor-pointer"
                 >
                   Create Bill Log
                 </button>
@@ -595,7 +595,7 @@ export default function BillsSubscriptions({ refresh }) {
 
                 <button 
                   type="submit"
-                  className="w-full py-2.5 bg-gradient-to-r from-brand-indigo to-brand-purple hover:brightness-110 text-white font-bold text-xs rounded-xl shadow-lg transition-all"
+                  className="w-full py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs rounded-xl shadow-sm shadow-blue-600/20 transition-all cursor-pointer"
                 >
                   Create Auto EMI
                 </button>
@@ -670,7 +670,7 @@ export default function BillsSubscriptions({ refresh }) {
 
                 <button 
                   type="submit"
-                  className="w-full py-2.5 bg-gradient-to-r from-brand-indigo to-brand-purple hover:brightness-110 text-white font-bold text-xs rounded-xl shadow-lg transition-all"
+                  className="w-full py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs rounded-xl shadow-sm shadow-blue-600/20 transition-all cursor-pointer"
                 >
                   Log Debt
                 </button>

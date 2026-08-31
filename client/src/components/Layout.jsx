@@ -84,15 +84,15 @@ export default function Layout() {
         <div>
           {/* Logo */}
           <div className="flex items-center gap-3 px-3 mb-8">
-            <div className="bg-gradient-to-tr from-brand-indigo to-brand-purple p-2.5 rounded-xl shadow-lg shadow-brand-indigo/20">
+            <div className="bg-blue-600 p-2.5 rounded-xl shadow-md shadow-blue-600/20">
               <Coins className="h-6 w-6 text-white" />
             </div>
             <div>
               <span className="logo-title">
                 BudgetWise
               </span>
-              <span className="text-[10px] block font-semibold text-brand-purple tracking-widest uppercase">
-                AI Assistant
+              <span className="text-[10px] block font-semibold text-blue-400 tracking-wider uppercase">
+                Financial OS
               </span>
             </div>
           </div>
@@ -108,11 +108,11 @@ export default function Layout() {
                   to={item.path}
                   className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all ${
                     isActive
-                      ? 'bg-gradient-to-r from-brand-indigo/20 to-brand-purple/10 text-white border border-brand-indigo/20 shadow-md shadow-brand-indigo/5'
-                      : 'text-gray-400 hover:bg-slate-900/50 hover:text-white border border-transparent'
+                      ? 'bg-blue-600/10 text-blue-400 border border-blue-500/20 font-semibold shadow-xs'
+                      : 'text-gray-400 hover:bg-slate-900/60 hover:text-white border border-transparent'
                   }`}
                 >
-                  <Icon className={`h-4.5 w-4.5 ${isActive ? 'text-brand-purple' : 'text-gray-400'}`} />
+                  <Icon className={`h-4.5 w-4.5 ${isActive ? 'text-blue-400' : 'text-gray-400'}`} />
                   {item.name}
                 </Link>
               );
@@ -133,14 +133,14 @@ export default function Layout() {
         {/* User profile Summary at Bottom */}
         <div className="border-t border-white/5 pt-4">
           <div className="flex items-center gap-3 px-2 mb-4">
-            <div className="h-10 w-10 rounded-full bg-gradient-to-tr from-brand-purple to-brand-rose flex items-center justify-center font-bold text-white shadow-inner">
+            <div className="h-10 w-10 rounded-full bg-slate-800 border border-slate-700/80 flex items-center justify-center font-bold text-white shadow-inner">
               {user?.name?.charAt(0).toUpperCase()}
             </div>
             <div>
               <div className="flex items-center gap-1.5">
                 <span className="text-sm font-semibold text-white">{user?.name}</span>
                 {user?.isPremium && (
-                  <span className="text-[9px] bg-brand-purple/20 text-brand-purple border border-brand-purple/30 px-1.5 py-0.5 rounded-full font-bold uppercase tracking-wider">
+                  <span className="text-[9px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-1.5 py-0.5 rounded-full font-bold uppercase tracking-wider">
                     PRO
                   </span>
                 )}
@@ -180,7 +180,9 @@ export default function Layout() {
               <div>
                 <div className="flex items-center justify-between mb-8">
                   <div className="flex items-center gap-3">
-                    <Coins className="h-6 w-6 text-brand-purple" />
+                    <div className="bg-blue-600 p-2 rounded-xl">
+                      <Coins className="h-5 w-5 text-white" />
+                    </div>
                     <span className="font-display font-extrabold text-lg text-white">BudgetWise</span>
                   </div>
                   <button onClick={() => setIsMobileOpen(false)} className="p-1 rounded-lg text-gray-400 hover:bg-slate-900">
@@ -199,11 +201,11 @@ export default function Layout() {
                         onClick={() => setIsMobileOpen(false)}
                         className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all ${
                           isActive
-                            ? 'bg-brand-indigo/20 text-white'
+                            ? 'bg-blue-600/10 text-blue-400 border border-blue-500/20 font-semibold'
                             : 'text-gray-400 hover:bg-slate-900 hover:text-white'
                         }`}
                       >
-                        <Icon className="h-4.5 w-4.5 text-brand-purple" />
+                        <Icon className={`h-4.5 w-4.5 ${isActive ? 'text-blue-400' : 'text-gray-400'}`} />
                         {item.name}
                       </Link>
                     );
@@ -248,23 +250,23 @@ export default function Layout() {
             </button>
             
             {/* Header Level & Coins Widget */}
-            <div className="flex items-center gap-4 bg-slate-900/60 border border-white/5 px-3 py-1.5 rounded-full shadow-inner">
-              <div className="flex items-center gap-1">
-                <Award className="h-4 w-4 text-brand-purple" />
-                <span className="text-xs font-bold text-gray-300">Lvl {user?.level || 1}</span>
+            <div className="flex items-center gap-4 bg-slate-900/80 border border-slate-800 px-3.5 py-1.5 rounded-full shadow-inner">
+              <div className="flex items-center gap-1.5">
+                <Award className="h-4 w-4 text-blue-400" />
+                <span className="text-xs font-bold text-gray-200">Lvl {user?.level || 1}</span>
               </div>
               
               {/* Progress to level up */}
               <div className="w-16 h-1.5 bg-slate-800 rounded-full overflow-hidden hidden sm:block">
                 <div 
-                  className="h-full bg-gradient-to-r from-brand-indigo to-brand-purple transition-all" 
+                  className="h-full bg-blue-500 transition-all" 
                   style={{ width: `${(user?.xp || 0) % 100}%` }}
                 />
               </div>
 
               <div className="flex items-center gap-1">
-                <Coins className="h-3.5 w-3.5 text-yellow-500" />
-                <span className="text-xs font-bold text-yellow-400">{user?.coins || 0}</span>
+                <Coins className="h-3.5 w-3.5 text-amber-400" />
+                <span className="text-xs font-bold text-amber-400">{user?.coins || 0}</span>
               </div>
             </div>
           </div>
@@ -273,13 +275,13 @@ export default function Layout() {
             {/* Theme Toggle Button */}
             <button
               onClick={toggleTheme}
-              className="p-2 rounded-xl text-gray-400 hover:bg-slate-900/50 hover:text-white dark:hover:bg-slate-900 hover:bg-slate-200 transition-all"
+              className="p-2 rounded-xl text-gray-400 hover:bg-slate-900/50 hover:text-white dark:hover:bg-slate-900 hover:bg-slate-200 transition-all cursor-pointer"
               title="Toggle Theme"
             >
               {(settings?.theme || 'dark') === 'dark' ? (
-                <Sun className="h-5 w-5 text-yellow-500" />
+                <Sun className="h-5 w-5 text-amber-400" />
               ) : (
-                <Moon className="h-5 w-5 text-brand-purple" />
+                <Moon className="h-5 w-5 text-blue-500" />
               )}
             </button>
 
@@ -287,14 +289,14 @@ export default function Layout() {
             <div className="relative">
               <button 
                 onClick={() => setIsNotifOpen(!isNotifOpen)} 
-                className="p-2 rounded-xl text-gray-400 hover:bg-slate-900/50 hover:text-white dark:hover:bg-slate-900 hover:bg-slate-200 transition-all relative"
+                className="p-2 rounded-xl text-gray-400 hover:bg-slate-900/50 hover:text-white dark:hover:bg-slate-900 hover:bg-slate-200 transition-all relative cursor-pointer"
               >
                 <Bell className="h-5 w-5" />
                 {unreadNotifs.length > 0 && (
-                  <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-brand-rose animate-ping" />
+                  <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-rose-500 animate-ping" />
                 )}
                 {unreadNotifs.length > 0 && (
-                  <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-brand-rose" />
+                  <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-rose-500" />
                 )}
               </button>
 
@@ -309,8 +311,8 @@ export default function Layout() {
                       className="absolute right-0 mt-2 w-80 bg-slate-900 border border-white/10 rounded-2xl shadow-xl z-20 overflow-hidden"
                     >
                       <div className="p-4 border-b border-white/5 flex items-center justify-between">
-                        <span className="font-semibold text-sm">Notifications</span>
-                        <span className="text-[10px] bg-brand-purple/20 text-brand-purple px-2 py-0.5 rounded-full font-bold">
+                        <span className="font-semibold text-sm text-white">Notifications</span>
+                        <span className="text-[10px] bg-blue-500/10 text-blue-400 border border-blue-500/20 px-2 py-0.5 rounded-full font-bold">
                           {unreadNotifs.length} New
                         </span>
                       </div>
@@ -348,7 +350,7 @@ export default function Layout() {
             {/* Profile Avatar click settings */}
             <div 
               onClick={() => navigate('/settings')}
-              className="h-9 w-9 rounded-xl bg-gradient-to-tr from-brand-indigo to-brand-purple flex items-center justify-center font-bold text-white shadow shadow-brand-indigo/10 cursor-pointer hover:scale-105 transition-all"
+              className="h-9 w-9 rounded-xl bg-slate-800 border border-slate-700/80 flex items-center justify-center font-bold text-slate-200 shadow-sm cursor-pointer hover:border-slate-500 transition-all"
             >
               {user?.name?.charAt(0).toUpperCase()}
             </div>

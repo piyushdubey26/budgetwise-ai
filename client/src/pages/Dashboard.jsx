@@ -36,16 +36,16 @@ import { updateLocalSettings } from '../store/authSlice.js';
 import axios from 'axios';
 
 const CATEGORY_COLORS = {
-  Food: '#a78bfa',        // Violet
-  Shopping: '#fb7185',    // Rose
-  Travel: '#60a5fa',      // Blue
-  Entertainment: '#f472b6',// Pink
-  Medical: '#f87171',      // Red
-  Education: '#fbbf24',    // Amber
-  Bills: '#34d399',        // Emerald
-  Rent: '#38bdf8',         // Light Blue
-  Investment: '#2dd4bf',   // Teal
-  Other: '#94a3b8'         // Slate
+  Food: '#3b82f6',        // Precision Blue
+  Shopping: '#f43f5e',    // Rose
+  Travel: '#0ea5e9',      // Sky
+  Entertainment: '#8b5cf6',// Violet
+  Medical: '#ef4444',      // Red
+  Education: '#f59e0b',    // Amber
+  Bills: '#10b981',        // Emerald
+  Rent: '#06b6d4',         // Cyan
+  Investment: '#14b8a6',   // Teal
+  Other: '#64748b'         // Slate
 };
 
 export default function Dashboard({ refresh }) {
@@ -214,16 +214,16 @@ export default function Dashboard({ refresh }) {
         <div className="flex gap-3">
           <Link
             to="/transactions"
-            className="flex items-center gap-2 bg-gradient-to-r from-brand-indigo to-brand-purple hover:brightness-110 px-4 py-2.5 rounded-xl font-semibold text-sm text-white shadow-lg shadow-brand-indigo/15 transition-all"
+            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 px-4 py-2.5 rounded-xl font-semibold text-sm text-white shadow-sm shadow-blue-600/20 transition-all cursor-pointer"
           >
             <Plus className="h-4 w-4" />
             Add Transaction
           </Link>
           <Link
             to="/ai-advisor"
-            className="flex items-center gap-2 bg-slate-900 border border-white/10 hover:bg-slate-800 px-4 py-2.5 rounded-xl font-semibold text-sm text-white transition-all"
+            className="flex items-center gap-2 bg-slate-900 border border-white/10 hover:bg-slate-800 px-4 py-2.5 rounded-xl font-semibold text-sm text-white transition-all cursor-pointer"
           >
-            <Compass className="h-4 w-4 text-brand-purple" />
+            <Compass className="h-4 w-4 text-blue-400" />
             AI Advice
           </Link>
         </div>
@@ -240,8 +240,8 @@ export default function Dashboard({ refresh }) {
           <div className="flex justify-between items-start">
             <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">Net Worth</span>
             {!isEditingNetWorth && (
-              <div className="p-2 bg-brand-purple/10 rounded-xl">
-                <TrendingUp className="h-5 w-5 text-brand-purple" />
+              <div className="p-2 bg-blue-500/10 rounded-xl">
+                <TrendingUp className="h-5 w-5 text-blue-400" />
               </div>
             )}
           </div>
@@ -258,7 +258,7 @@ export default function Dashboard({ refresh }) {
                   />
                   <button 
                     onClick={handleSaveNetWorth}
-                    className="bg-brand-indigo hover:bg-brand-purple px-2 py-0.5 rounded-lg text-[10px] font-bold text-white transition-all cursor-pointer"
+                    className="bg-blue-600 hover:bg-blue-500 px-2 py-0.5 rounded-lg text-[10px] font-bold text-white transition-all cursor-pointer"
                   >
                     Save
                   </button>
@@ -274,7 +274,7 @@ export default function Dashboard({ refresh }) {
                   <h3 className="text-2xl font-bold text-white mt-1">
                     ₹{summary.netWorth?.toLocaleString()}
                   </h3>
-                  <span className="text-[10px] text-brand-purple font-semibold">
+                  <span className="text-[10px] text-blue-400 font-semibold">
                     {settings?.manualNetWorth !== undefined && settings?.manualNetWorth !== null ? 'Manual Override' : 'Wallets + Investments - Debts'}
                   </span>
                 </div>
@@ -482,7 +482,7 @@ export default function Dashboard({ refresh }) {
               <div className="w-full h-3 bg-slate-800 rounded-full overflow-hidden">
                 <div 
                   className={`h-full transition-all duration-500 ${
-                    budgetProgress >= 100 ? 'bg-rose-500' : budgetProgress >= 80 ? 'bg-amber-500' : 'bg-gradient-to-r from-brand-indigo to-brand-purple'
+                    budgetProgress >= 100 ? 'bg-rose-500' : budgetProgress >= 80 ? 'bg-amber-500' : 'bg-blue-500'
                   }`}
                   style={{ width: `${budgetProgress}%` }}
                 />
@@ -512,7 +512,7 @@ export default function Dashboard({ refresh }) {
           
           <button 
             onClick={() => navigate('/transactions?tab=budgets')} 
-            className="text-xs font-bold text-brand-purple flex items-center gap-1 hover:underline mt-auto pt-4"
+            className="text-xs font-bold text-blue-400 flex items-center gap-1 hover:underline mt-auto pt-4 cursor-pointer"
           >
             Manage budgets and limits <ArrowRight className="h-3 w-3" />
           </button>
@@ -644,7 +644,7 @@ export default function Dashboard({ refresh }) {
               <Link 
                 to="/transactions"
                 state={{ prefillDate: selectedDate }}
-                className="flex items-center gap-2 bg-gradient-to-r from-brand-indigo to-brand-purple hover:brightness-110 px-5 py-2.5 rounded-xl font-semibold text-sm text-white shadow-lg shadow-brand-indigo/15 transition-all"
+                className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 px-5 py-2.5 rounded-xl font-semibold text-sm text-white shadow-sm shadow-blue-600/20 transition-all cursor-pointer"
               >
                 <Plus className="h-4 w-4" />
                 Add Transaction

@@ -52,7 +52,7 @@ export default function Investments({ refresh }) {
 
         <button 
           onClick={() => setShowAddInv(true)}
-          className="flex items-center gap-2 bg-gradient-to-r from-brand-indigo to-brand-purple hover:brightness-110 px-4 py-2.5 rounded-xl font-semibold text-sm text-white shadow transition-all"
+          className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 px-4 py-2.5 rounded-xl font-semibold text-sm text-white shadow-sm shadow-blue-600/20 transition-all cursor-pointer"
         >
           <Plus className="h-4 w-4" /> Add Asset Log
         </button>
@@ -191,7 +191,7 @@ export default function Investments({ refresh }) {
 
                 <button 
                   type="submit"
-                  className="w-full py-2.5 bg-gradient-to-r from-brand-indigo to-brand-purple hover:brightness-110 text-white font-bold text-xs rounded-xl shadow-lg transition-all"
+                  className="w-full py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs rounded-xl shadow-sm shadow-blue-600/20 transition-all cursor-pointer"
                 >
                   Confirm Asset Purchase
                 </button>

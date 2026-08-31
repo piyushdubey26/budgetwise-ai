@@ -115,15 +115,15 @@ export default function Settings({ refresh }) {
                   </div>
                   
                   <ul className="space-y-2 text-[10px] text-gray-300">
-                    <li className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-brand-purple shrink-0" /> Unlimited wallets (Free limit: 3)</li>
-                    <li className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-brand-purple shrink-0" /> Unlimited savings goals</li>
-                    <li className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-brand-purple shrink-0" /> Gemini 1.5 Pro AI Insights</li>
-                    <li className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-brand-purple shrink-0" /> Premium PDF PDF report generators</li>
+                    <li className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-blue-400 shrink-0" /> Unlimited wallets (Free limit: 3)</li>
+                    <li className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-blue-400 shrink-0" /> Unlimited savings goals</li>
+                    <li className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-blue-400 shrink-0" /> Gemini 3.5 Flash AI Insights</li>
+                    <li className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-blue-400 shrink-0" /> Premium PDF report generators</li>
                   </ul>
 
                   <button
                     onClick={() => setShowRazorpay(true)}
-                    className="w-full py-2.5 bg-gradient-to-r from-brand-indigo to-brand-purple hover:brightness-110 text-white font-extrabold text-xs rounded-xl shadow-lg shadow-brand-indigo/20 transition-all mt-4"
+                    className="w-full py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs rounded-xl shadow-sm shadow-blue-600/20 transition-all mt-4 cursor-pointer"
                   >
                     Upgrade Plan via Razorpay
                   </button>
@@ -136,7 +136,7 @@ export default function Settings({ refresh }) {
         {/* Configurations Form */}
         <div className="md:col-span-2 glass-panel p-6 rounded-3xl">
           <h3 className="text-base font-bold text-white mb-6 flex items-center gap-2">
-            <SettingsIcon className="h-4.5 w-4.5 text-brand-purple" />
+            <SettingsIcon className="h-4.5 w-4.5 text-blue-400" />
             Profile Preferences
           </h3>
 
@@ -224,7 +224,7 @@ export default function Settings({ refresh }) {
               <button 
                 type="submit" 
                 disabled={loading}
-                className="bg-slate-900 border border-white/10 hover:bg-slate-800 text-white text-xs font-bold px-5 py-2.5 rounded-xl transition-all"
+                className="bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold px-5 py-2.5 rounded-xl shadow-sm shadow-blue-600/20 transition-all cursor-pointer"
               >
                 {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Save Preferences'}
               </button>

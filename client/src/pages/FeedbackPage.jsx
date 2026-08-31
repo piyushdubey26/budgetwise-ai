@@ -131,7 +131,7 @@ export default function FeedbackPage() {
               <button
                 type="submit"
                 disabled={isSubmitting || !comment.trim()}
-                className={`w-full py-3 bg-gradient-to-r from-brand-indigo to-brand-purple hover:brightness-110 text-white font-bold text-xs rounded-xl shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer ${
+                className={`w-full py-3 bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs rounded-xl shadow-sm shadow-blue-600/20 transition-all flex items-center justify-center gap-2 cursor-pointer ${
                   isSubmitting || !comment.trim() ? 'opacity-50 cursor-not-allowed' : ''
                 }`}
               >
@@ -156,7 +156,7 @@ export default function FeedbackPage() {
             <h3 className="text-sm font-bold text-white">Your Past Feedback</h3>
             <button 
               onClick={fetchFeedbackHistory}
-              className="text-[10px] font-bold text-brand-purple hover:underline cursor-pointer"
+              className="text-[10px] font-semibold text-blue-400 hover:underline cursor-pointer"
             >
               Refresh
             </button>
