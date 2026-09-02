@@ -265,24 +265,47 @@ export const googleLogin = async (req, res) => {
 
 export const upgradeToPremium = async (req, res) => {
   try {
-    const userId = req.user.id;
-    // Mock successful premium upgrade (simulate Razorpay backend webhooks/verifications)
+    const userId = req.user?.id || req.user?._id;
+    if (!userId) {
+      return res.status(401).json({ message: 'User ID missing from authentication token.' });
+    }
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found in system database.' });
+    }
+
     const premiumExpires = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000); // 1 year
-    const user = await User.findByIdAndUpdate(userId, {
-      isPremium: true,
-      premiumExpires,
-      coins: (await User.findById(userId)).coins + 500 // Gamification bonus
-    });
+    const currentCoins = Number(user.coins) || 0;
+
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      {
+        isPremium: true,
+        premiumExpires,
+        coins: currentCoins + 500 // Gamification bonus
+      },
+      { new: true }
+    );
+
+    const safeUser = updatedUser || user;
 
     res.status(200).json({
       message: 'Upgraded to premium plan successfully! Enjoy unlimited wallets, goals, and AI advisor.',
       user: {
-        ...user,
+        id: safeUser._id || safeUser.id || userId,
+        name: safeUser.name,
+        email: safeUser.email,
+        level: safeUser.level || 1,
+        coins: safeUser.coins !== undefined ? safeUser.coins : currentCoins + 500,
+        xp: safeUser.xp || 0,
         isPremium: true,
-        premiumExpires
+        premiumExpires,
+        role: safeUser.role || 'user'
       }
     });
   } catch (err) {
-    res.status(500).json({ message: 'Internal server error.', error: err.message });
+    console.error('UpgradeToPremium error:', err);
+    res.status(500).json({ message: 'Internal server error during premium upgrade.', error: err.message });
   }
 };
