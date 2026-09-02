@@ -86,7 +86,35 @@ html.light .admin-page-title {
 body {
   font-family: var(--font-sans);
   overflow-x: hidden;
+  min-height: 100vh;
+  position: relative;
   transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* Fixed pastel wave background across all pages */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-image: url('/bg-waves.jpg');
+  background-size: cover;
+  background-position: center bottom;
+  background-repeat: no-repeat;
+  pointer-events: none;
+  z-index: -1;
+}
+
+html.dark body::before {
+  opacity: 0.38;
+  filter: brightness(0.65) saturate(1.2);
+}
+
+html.light body::before {
+  opacity: 0.95;
+  filter: saturate(1.05);
 }
 
 html.dark body {
@@ -95,7 +123,7 @@ html.dark body {
 }
 
 html.light body {
-  background-color: #f8fafc;
+  background-color: #f6f5f0;
   color: #0f172a;
 }
 
@@ -104,27 +132,33 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* ==========================================
-   LIGHT MODE DESIGN REMAPPING OVERRIDES
+   LIGHT MODE DESIGN REMAPPING OVERRIDES (FROSTED GLASS)
    ========================================== */
 
 html.light .glass-panel {
-  background: #ffffff !important;
-  border: 1px solid #e2e8f0 !important;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05) !important;
+  background: rgba(255, 255, 255, 0.85) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  border: 1px solid rgba(226, 232, 240, 0.85) !important;
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.06) !important;
 }
 
 html.light .glass-card {
-  background: #f8fafc !important;
-  border: 1px solid #e2e8f0 !important;
+  background: rgba(255, 255, 255, 0.75) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(226, 232, 240, 0.75) !important;
 }
 
 html.light .bg-slate-950 {
-  background-color: #ffffff !important;
-  border-color: #e2e8f0 !important;
+  background-color: rgba(255, 255, 255, 0.88) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  border-color: rgba(226, 232, 240, 0.85) !important;
 }
 
 html.light .bg-\[\#020617\] {
-  background-color: #f8fafc !important;
+  background-color: transparent !important;
 }
 
 html.light .text-gray-100 {
@@ -148,63 +182,70 @@ html.light .text-gray-500 {
 }
 
 html.light .border-white\/5 {
-  border-color: #f1f5f9 !important;
+  border-color: rgba(226, 232, 240, 0.7) !important;
 }
 
 html.light .border-white\/10 {
-  border-color: #e2e8f0 !important;
+  border-color: rgba(203, 213, 225, 0.8) !important;
 }
 
 html.light .border-white\/20 {
-  border-color: #cbd5e1 !important;
+  border-color: rgba(148, 163, 184, 0.8) !important;
 }
 
 html.light .bg-slate-900\/60 {
-  background-color: #f1f5f9 !important;
-  border-color: #e2e8f0 !important;
+  background-color: rgba(241, 245, 249, 0.75) !important;
+  backdrop-filter: blur(12px) !important;
+  border-color: rgba(226, 232, 240, 0.8) !important;
 }
 
 html.light .bg-slate-900 {
-  background-color: #f1f5f9 !important;
+  background-color: rgba(241, 245, 249, 0.85) !important;
+  backdrop-filter: blur(12px) !important;
 }
 
 html.light .bg-slate-950\/40 {
-  background-color: rgba(255, 255, 255, 0.8) !important;
-  border-color: #e2e8f0 !important;
+  background-color: rgba(255, 255, 255, 0.75) !important;
+  backdrop-filter: blur(12px) !important;
+  border-color: rgba(226, 232, 240, 0.8) !important;
 }
 
 html.light .bg-slate-900\/50 {
-  background-color: #f1f5f9 !important;
+  background-color: rgba(241, 245, 249, 0.75) !important;
+  backdrop-filter: blur(12px) !important;
 }
 
 html.light .hover\:bg-slate-900\/50:hover {
-  background-color: #e2e8f0 !important;
+  background-color: rgba(226, 232, 240, 0.85) !important;
 }
 
 html.light input, html.light select, html.light textarea {
-  background-color: #ffffff !important;
+  background-color: rgba(255, 255, 255, 0.9) !important;
+  backdrop-filter: blur(8px) !important;
   color: #0f172a !important;
   border: 1px solid #cbd5e1 !important;
 }
 
 html.light table {
-  background-color: #ffffff !important;
+  background-color: rgba(255, 255, 255, 0.85) !important;
+  backdrop-filter: blur(12px) !important;
   color: #334155 !important;
 }
 
 html.light table th {
-  background-color: #f8fafc !important;
+  background-color: rgba(248, 250, 252, 0.9) !important;
   color: #475569 !important;
   border-bottom: 1px solid #e2e8f0 !important;
 }
 
 html.light table tr:hover {
-  background-color: #f8fafc !important;
+  background-color: rgba(241, 245, 249, 0.8) !important;
 }
 
 html.light .bg-slate-950\/60 {
-  background-color: #f8fafc !important;
-  border-color: #e2e8f0 !important;
+  background-color: rgba(255, 255, 255, 0.85) !important;
+  backdrop-filter: blur(14px) !important;
+  border-color: rgba(226, 232, 240, 0.8) !important;
 }
 
 /* Subtle glow effect */

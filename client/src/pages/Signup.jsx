@@ -27,13 +27,13 @@ export default function Signup() {
   };
 
   return (
-    <div className="min-h-screen bg-[#020617] flex items-center justify-center p-4 relative font-sans overflow-hidden">
+    <div className="min-h-screen bg-transparent flex items-center justify-center p-4 relative font-sans overflow-hidden">
       
       {/* Background neon glows */}
       <div className="absolute top-1/4 left-1/4 w-80 h-80 bg-blue-600/10 rounded-full filter blur-3xl" />
       <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-sky-500/10 rounded-full filter blur-3xl" />
 
-      <div className="w-full max-w-md bg-slate-950/60 border border-white/10 p-8 rounded-3xl backdrop-blur-md shadow-2xl relative z-10 space-y-6">
+      <div className="w-full max-w-md bg-slate-950/75 border border-white/10 p-8 rounded-3xl backdrop-blur-xl shadow-2xl relative z-10 space-y-6">
         
         {/* Logo */}
         <div className="flex items-center justify-center gap-3">

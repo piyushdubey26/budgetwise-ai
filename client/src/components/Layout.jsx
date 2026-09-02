@@ -77,10 +77,10 @@ export default function Layout() {
   const unreadNotifs = notifications.filter(n => !n.read);
 
   return (
-    <div className="flex h-screen bg-[#020617] text-gray-100 overflow-hidden font-sans">
+    <div className="flex h-screen bg-transparent text-gray-100 overflow-hidden font-sans">
       
       {/* Sidebar for Desktop */}
-      <aside className="hidden lg:flex flex-col w-64 bg-slate-950 border-r border-white/5 py-6 px-4 shrink-0 justify-between">
+      <aside className="hidden lg:flex flex-col w-64 bg-slate-950/80 backdrop-blur-xl border-r border-white/10 py-6 px-4 shrink-0 justify-between">
         <div>
           {/* Logo */}
           <div className="flex items-center gap-3 px-3 mb-8">
