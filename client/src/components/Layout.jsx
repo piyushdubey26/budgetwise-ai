@@ -23,7 +23,21 @@ import {
   Sun,
   Moon
 } from 'lucide-react';
-import { logout, updateLocalSettings, setAdminViewMode } from '../store/authSlice.js';
+import { logout, updateLocalSettings, setAdminViewMode, loadProfile } from '../store/authSlice.js';
+import {
+  setWallets,
+  setTransactions,
+  setBudgets,
+  setGoals,
+  setInvestments,
+  setDebts,
+  setEmis,
+  setBills,
+  setSubscriptions,
+  setNotifications,
+  setSummary
+} from '../store/financeSlice.js';
+import BudgyAssistantModal from './BudgyAssistantModal.jsx';
 import axios from 'axios';
 
 export default function Layout() {
@@ -49,6 +63,53 @@ export default function Layout() {
   const handleLogout = () => {
     dispatch(logout());
     navigate('/login');
+  };
+
+  const handleRefreshData = async () => {
+    try {
+      const [
+        profileRes,
+        walletsRes,
+        transRes,
+        budgetsRes,
+        goalsRes,
+        investRes,
+        debtsRes,
+        emisRes,
+        billsRes,
+        subsRes,
+        notifRes,
+        summaryRes
+      ] = await Promise.all([
+        axios.get('/api/auth/profile').catch(() => null),
+        axios.get('/api/wallets').catch(() => null),
+        axios.get('/api/transactions').catch(() => null),
+        axios.get('/api/budgets').catch(() => null),
+        axios.get('/api/goals').catch(() => null),
+        axios.get('/api/investments').catch(() => null),
+        axios.get('/api/debts').catch(() => null),
+        axios.get('/api/emis').catch(() => null),
+        axios.get('/api/bills').catch(() => null),
+        axios.get('/api/subscriptions').catch(() => null),
+        axios.get('/api/notifications').catch(() => null),
+        axios.get('/api/dashboard').catch(() => null),
+      ]);
+
+      if (profileRes?.data) dispatch(loadProfile(profileRes.data));
+      if (walletsRes?.data) dispatch(setWallets(walletsRes.data));
+      if (transRes?.data) dispatch(setTransactions(transRes.data));
+      if (budgetsRes?.data) dispatch(setBudgets(budgetsRes.data));
+      if (goalsRes?.data) dispatch(setGoals(goalsRes.data));
+      if (investRes?.data) dispatch(setInvestments(investRes.data));
+      if (debtsRes?.data) dispatch(setDebts(debtsRes.data));
+      if (emisRes?.data) dispatch(setEmis(emisRes.data));
+      if (billsRes?.data) dispatch(setBills(billsRes.data));
+      if (subsRes?.data) dispatch(setSubscriptions(subsRes.data));
+      if (notifRes?.data) dispatch(setNotifications(notifRes.data));
+      if (summaryRes?.data) dispatch(setSummary(summaryRes.data));
+    } catch (e) {
+      console.error('Data refresh error:', e);
+    }
   };
 
   const markRead = async (id) => {
@@ -362,6 +423,9 @@ export default function Layout() {
           <Outlet />
         </main>
       </div>
+
+      {/* Floating Budgy Wake-Word AI Voice Assistant Modal */}
+      <BudgyAssistantModal onRefreshData={handleRefreshData} />
 
     </div>
   );
