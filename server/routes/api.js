@@ -7,7 +7,7 @@ import * as authCtrl from '../controllers/authController.js';
 import * as finCtrl from '../controllers/financeController.js';
 import * as aiCtrl from '../controllers/aiController.js';
 import * as repCtrl from '../controllers/reportController.js';
-import * as budgyCtrl from '../controllers/budgyAgentController.js';
+import * as novaCtrl from '../controllers/novaAgentController.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -114,9 +114,10 @@ router.get('/feedback/my', auth, finCtrl.getMyFeedback);
 router.get('/dashboard', auth, finCtrl.getDashboardSummary);
 
 // ==========================================
-// AI, BUDGY VOICE AGENT & OCR ROUTES
+// AI, NOVA VOICE AGENT & OCR ROUTES
 // ==========================================
-router.post('/ai/budgy-agent', auth, budgyCtrl.processBudgyCommand);
+router.post('/ai/nova-agent', auth, novaCtrl.processNovaCommand);
+router.post('/ai/budgy-agent', auth, novaCtrl.processNovaCommand); // Legacy alias
 router.post('/ai/categorize', auth, aiCtrl.autoCategorize);
 router.get('/ai/advisor', auth, aiCtrl.getAiAdvisorFeedback);
 router.post('/ai/scan', auth, upload.single('receipt'), aiCtrl.scanReceipt);

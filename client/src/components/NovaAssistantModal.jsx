@@ -21,9 +21,9 @@ import {
   ShieldAlert,
   ArrowRight
 } from 'lucide-react';
-import { useBudgyVoice } from '../hooks/useBudgyVoice.js';
+import { useNovaVoice } from '../hooks/useNovaVoice.js';
 
-export default function BudgyAssistantModal({ onRefreshData }) {
+export default function NovaAssistantModal({ onRefreshData }) {
   const { token, user } = useSelector((state) => state.auth);
   const [isOpen, setIsOpen] = useState(false);
   const [textInput, setTextInput] = useState('');
@@ -46,7 +46,7 @@ export default function BudgyAssistantModal({ onRefreshData }) {
     setIsMuted,
     sendCommandToAgent,
     resetState
-  } = useBudgyVoice({
+  } = useNovaVoice({
     token,
     onActionComplete: (data) => {
       if (onRefreshData) onRefreshData();
@@ -77,7 +77,7 @@ export default function BudgyAssistantModal({ onRefreshData }) {
   return (
     <>
       {/* =========================================================================
-          1. FLOATING BUDGY TRIGGER BUTTON (ALWAYS VISIBLE)
+          1. FLOATING NOVA TRIGGER BUTTON (ALWAYS ACCESSIBLE)
           ========================================================================= */}
       <div className="fixed bottom-6 right-6 z-40 flex items-center gap-2.5">
         
@@ -89,7 +89,7 @@ export default function BudgyAssistantModal({ onRefreshData }) {
             className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-900/80 backdrop-blur-md border border-emerald-500/30 shadow-lg text-[11px] text-emerald-300 font-semibold"
           >
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
-            <span>"Hey Budgy" Listening</span>
+            <span>"Hey Nova" Listening</span>
           </motion.div>
         )}
 
@@ -102,7 +102,8 @@ export default function BudgyAssistantModal({ onRefreshData }) {
             if (status === 'idle') startListening();
           }}
           className="relative group p-3.5 sm:p-4 rounded-full bg-gradient-to-tr from-blue-600 via-indigo-600 to-sky-400 text-white shadow-[0_10px_30px_rgba(37,99,235,0.45)] border border-white/25 cursor-pointer flex items-center justify-center transition-all overflow-hidden"
-          title="Budgy Voice Assistant"
+          title="Nova Voice Assistant"
+          aria-label="Nova Voice Assistant"
         >
           {/* Subtle Ambient Pulse Ring */}
           <span className="absolute inset-0 rounded-full bg-blue-400 opacity-20 group-hover:opacity-40 animate-pulse" />
@@ -110,14 +111,14 @@ export default function BudgyAssistantModal({ onRefreshData }) {
           <div className="relative z-10 flex items-center gap-2">
             <Mic className="h-5 w-5 text-white animate-bounce" />
             <span className="hidden md:inline font-display font-bold text-xs tracking-wide">
-              Budgy Voice
+              Nova Voice
             </span>
           </div>
         </motion.button>
       </div>
 
       {/* =========================================================================
-          2. BUDGY FULL VOICE ASSISTANT MODAL (FROSTED GLASS)
+          2. NOVA FULL VOICE ASSISTANT MODAL (FROSTED GLASS)
           ========================================================================= */}
       <AnimatePresence>
         {isOpen && (
@@ -130,7 +131,7 @@ export default function BudgyAssistantModal({ onRefreshData }) {
               transition={{ duration: 0.25, ease: 'easeOut' }}
               className="w-full max-w-lg h-[90vh] sm:h-[650px] max-h-[700px] flex flex-col rounded-t-[2.5rem] sm:rounded-[2.5rem] shadow-2xl overflow-hidden relative"
               style={{
-                background: 'rgba(15, 23, 42, 0.78)',
+                background: 'rgba(15, 23, 42, 0.82)',
                 backdropFilter: 'blur(32px) saturate(190%)',
                 WebkitBackdropFilter: 'blur(32px) saturate(190%)',
                 border: '1px solid rgba(255, 255, 255, 0.18)',
@@ -147,14 +148,14 @@ export default function BudgyAssistantModal({ onRefreshData }) {
                   <div>
                     <div className="flex items-center gap-2">
                       <h2 className="font-display font-extrabold text-base text-white tracking-tight">
-                        Budgy AI
+                        Nova AI
                       </h2>
                       <span className="text-[10px] px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-300 font-semibold border border-blue-400/20">
-                        Voice Agent
+                        Financial Agent
                       </span>
                     </div>
                     <p className="text-[11px] text-slate-300/80">
-                      Say <strong className="text-white">"Hey Budgy"</strong> or speak a financial command
+                      Say <strong className="text-white">"Hey Nova"</strong> or speak a financial command
                     </p>
                   </div>
                 </div>
@@ -170,7 +171,7 @@ export default function BudgyAssistantModal({ onRefreshData }) {
                         ? 'bg-emerald-500/20 border-emerald-400/40 text-emerald-300'
                         : 'bg-white/5 border-white/10 text-slate-400 hover:text-white'
                     }`}
-                    title={isWakeWordEnabled ? "Wake word active ('Hey Budgy')" : "Enable wake word listener"}
+                    title={isWakeWordEnabled ? "Wake word active ('Hey Nova')" : "Enable wake word listener"}
                   >
                     <Radio className={`h-4 w-4 ${isWakeWordEnabled ? 'animate-pulse text-emerald-400' : ''}`} />
                     <span className="hidden sm:inline text-[10px]">
@@ -258,12 +259,12 @@ export default function BudgyAssistantModal({ onRefreshData }) {
                       {isListening
                         ? '🎙️ Listening... Speak your command'
                         : isThinking
-                        ? '⚡ Budgy is understanding & executing...'
+                        ? '⚡ Nova is processing & executing...'
                         : status === 'confirming'
                         ? '⚠️ Confirmation Required'
                         : status === 'success'
                         ? '✓ Action Completed Successfully'
-                        : 'Tap the Mic or say "Hey Budgy"'}
+                        : 'Tap the Mic or say "Hey Nova"'}
                     </p>
                     <p className="text-[10px] text-slate-400">
                       English • Hindi • Hinglish supported
@@ -378,12 +379,12 @@ export default function BudgyAssistantModal({ onRefreshData }) {
                   </span>
                   <div className="flex flex-wrap gap-1.5">
                     {[
-                      "I spent 100 on samosas",
-                      "Add 500 for dinner yesterday",
-                      "How much did I spend on food?",
-                      "What is my remaining budget?",
-                      "What is my balance?",
-                      "Delete my last expense"
+                      "Hey Nova, I spent 100 on samosas",
+                      "Hey Nova, yesterday I spent 500 on dinner",
+                      "Hey Nova, how much did I spend on food?",
+                      "Hey Nova, what's my remaining budget?",
+                      "Hey Nova, what's my balance?",
+                      "Hey Nova, delete my last expense"
                     ].map((prompt, idx) => (
                       <button
                         key={idx}
@@ -407,7 +408,7 @@ export default function BudgyAssistantModal({ onRefreshData }) {
                     type="text"
                     value={textInput}
                     onChange={(e) => setTextInput(e.target.value)}
-                    placeholder="Type or speak a command (e.g. Spent 200 on fuel)..."
+                    placeholder="Type or speak to Nova (e.g. Spent 200 on fuel)..."
                     className="flex-1 bg-slate-900/70 border border-white/15 focus:border-blue-400 focus:bg-slate-900/90 rounded-2xl px-4 py-3 text-xs text-white placeholder:text-slate-400/70 focus:outline-none transition-all shadow-inner"
                   />
                   

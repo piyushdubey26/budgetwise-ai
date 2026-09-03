@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import axios from 'axios';
 
-export function useBudgyVoice({ onActionComplete, token } = {}) {
+export function useNovaVoice({ onActionComplete, token } = {}) {
   // States: 'idle' | 'wake_word_active' | 'listening' | 'thinking' | 'confirming' | 'success' | 'error'
   const [status, setStatus] = useState('idle');
   const [transcript, setTranscript] = useState('');
@@ -25,7 +25,7 @@ export function useBudgyVoice({ onActionComplete, token } = {}) {
   const speak = useCallback((text) => {
     if (isMuted || typeof window === 'undefined' || !window.speechSynthesis || !text) return;
 
-    window.speechSynthesis.cancel(); // Stop ongoing speech
+    window.speechSynthesis.cancel();
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.rate = 1.05;
     utterance.pitch = 1.0;
@@ -38,7 +38,7 @@ export function useBudgyVoice({ onActionComplete, token } = {}) {
     window.speechSynthesis.speak(utterance);
   }, [isMuted]);
 
-  // Execute command to Budgy AI Backend
+  // Execute command to Nova AI Backend
   const sendCommandToAgent = useCallback(async (commandText) => {
     if (!commandText || commandText.trim() === '' || isProcessingRef.current) return;
     
@@ -48,7 +48,7 @@ export function useBudgyVoice({ onActionComplete, token } = {}) {
 
     try {
       const headers = token ? { Authorization: `Bearer ${token}` } : {};
-      const res = await axios.post('/api/ai/budgy-agent', {
+      const res = await axios.post('/api/ai/nova-agent', {
         message: commandText,
         conversationHistory: conversationHistory.slice(-4),
         timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || 'Asia/Kolkata',
@@ -81,7 +81,7 @@ export function useBudgyVoice({ onActionComplete, token } = {}) {
       }
 
     } catch (err) {
-      console.error('Budgy Agent API Error:', err);
+      console.error('Nova Agent API Error:', err);
       const errTxt = err.response?.data?.message || "I couldn't process that command right now. Please try again.";
       setErrorMessage(errTxt);
       setStatus('error');
@@ -109,7 +109,7 @@ export function useBudgyVoice({ onActionComplete, token } = {}) {
     const rec = new SpeechRec();
     rec.continuous = false;
     rec.interimResults = true;
-    rec.lang = 'en-IN'; // Indian English handles Hinglish smoothly
+    rec.lang = 'en-IN'; // Indian English handles Hindi & Hinglish smoothly
 
     rec.onstart = () => {
       setStatus('listening');
@@ -132,8 +132,8 @@ export function useBudgyVoice({ onActionComplete, token } = {}) {
 
       if (finalTxt) {
         setTranscript(finalTxt);
-        // Strip wake phrase if user said "Hey Budgy ..."
-        const cleanCommand = finalTxt.replace(/^(hey|hi|hello|ok|okay)?\s*budg[a-z]*\s*,?\s*/i, '').trim();
+        // Strip wake phrase if user said "Hey Nova ..."
+        const cleanCommand = finalTxt.replace(/^(hey|hi|hello|ok|okay)?\s*nova\s*,?\s*/i, '').trim();
         sendCommandToAgent(cleanCommand || finalTxt);
       } else {
         setInterimTranscript(interimTxt);
@@ -154,7 +154,6 @@ export function useBudgyVoice({ onActionComplete, token } = {}) {
       if (status === 'listening') {
         setStatus('idle');
       }
-      // Resume wake word listener if it was enabled
       if (isWakeWordEnabled) {
         startWakeWordListener();
       }
@@ -176,7 +175,7 @@ export function useBudgyVoice({ onActionComplete, token } = {}) {
     setStatus('idle');
   }, []);
 
-  // Continuous Wake-Word Background Listener for "Hey Budgy" / "Budgy"
+  // Continuous Wake-Word Background Listener for "Hey Nova" / "Nova"
   const startWakeWordListener = useCallback(() => {
     if (!isSpeechSupported || !isWakeWordEnabled) return;
 
@@ -191,19 +190,17 @@ export function useBudgyVoice({ onActionComplete, token } = {}) {
         for (let i = event.resultIndex; i < event.results.length; ++i) {
           const phrase = event.results[i][0].transcript.toLowerCase();
           
-          if (/hey\s*budg|hai\s*budg|budgy|budgi/i.test(phrase)) {
-            console.log('🎙️ Wake word "Hey Budgy" detected!');
+          if (/hey\s*nova|hai\s*nova|ok\s*nova|okay\s*nova|\bnova\b/i.test(phrase)) {
+            console.log('🎙️ Wake word "Hey Nova" detected!');
             try { wakeRec.stop(); } catch {}
             
-            // Extract command if user continued speaking in the same sentence
-            const match = phrase.match(/(?:hey|hai)?\s*budg[a-z]*\s*,?\s*(.*)/i);
+            const match = phrase.match(/(?:hey|hai|ok|okay)?\s*nova\s*,?\s*(.*)/i);
             const remainder = match ? match[1].trim() : '';
 
             if (remainder.length > 3) {
               setTranscript(remainder);
               sendCommandToAgent(remainder);
             } else {
-              // Trigger active command capture
               startListening();
             }
             return;
@@ -219,7 +216,6 @@ export function useBudgyVoice({ onActionComplete, token } = {}) {
       };
 
       wakeRec.onend = () => {
-        // Auto-restart wake word if enabled and not currently processing
         if (isWakeWordEnabled && status === 'idle') {
           try { wakeRec.start(); } catch {}
         }

@@ -37,7 +37,7 @@ import {
   setNotifications,
   setSummary
 } from '../store/financeSlice.js';
-import BudgyAssistantModal from './BudgyAssistantModal.jsx';
+import NovaAssistantModal from './NovaAssistantModal.jsx';
 import axios from 'axios';
 
 export default function Layout() {
@@ -424,8 +424,8 @@ export default function Layout() {
         </main>
       </div>
 
-      {/* Floating Budgy Wake-Word AI Voice Assistant Modal */}
-      <BudgyAssistantModal onRefreshData={handleRefreshData} />
+      {/* Floating Nova Wake-Word AI Financial Voice Assistant Modal */}
+      <NovaAssistantModal onRefreshData={handleRefreshData} />
 
     </div>
   );
